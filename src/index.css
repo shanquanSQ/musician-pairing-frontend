@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  font-family: "Inter", sans-serif;
+}
+
+@layer base {
+  :root {
+    /* Fills */
+    --color-bg: 0deg 0% 100%;
+    --color-primary: 239deg 82% 65%;
+    --color-secondary: 292deg 99% 68%;
+
+    /* Header Colours */
+    --header-pri: 239deg 62% 75%;
+
+    /* Text Colours */
+    --text-pri: 239deg 82% 65%;
+    --text-secondary: 0deg 0% 40%;
+    --text-neutral: 0deg 0% 30%;
+  }
+}

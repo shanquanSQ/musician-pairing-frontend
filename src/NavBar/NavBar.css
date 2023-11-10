@@ -1,0 +1,15 @@
+nav {
+  @apply flex flex-row justify-around bg-slate-200 fixed top-0 w-full py-3 align-middle;
+}
+
+nav a {
+  @apply text-slate-900;
+}
+
+nav a.active {
+  @apply text-txtcolor-primary font-bold;
+}
+
+nav a:hover {
+  @apply text-txtcolor-primary scale-[130%];
+}
