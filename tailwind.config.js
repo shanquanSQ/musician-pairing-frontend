@@ -4,7 +4,15 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["'Pixelify Sans'", "sans-serif;"],
+        sans: ["Libre Franklin", "sans-serif"],
+      },
+
+      backgroundColor: {
+        fill: {
+          primary: "hsl(var(--color-primary) / 1)",
+          secondary: "hsl(var(--color-secondary) / 1)",
+          bg: "hsl(var(--color-bg) / 1)",
+        },
       },
 
       textColor: {

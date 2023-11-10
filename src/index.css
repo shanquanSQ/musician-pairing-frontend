@@ -4,6 +4,7 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 
+@import url("https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400;0,500;1,400;1,500&family=Libre+Franklin:ital,wght@0,100;0,300;0,400;0,500;0,600;0,700;0,800;1,600;1,700;1,800&display=swap");
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -12,21 +13,24 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  font-family: "Inter", sans-serif;
+  /* font-family: "Inter", sans-serif; */
+  /* font-family: 'Libre Bodoni', serif; */
+  font-family: "Libre Franklin", sans-serif;
+  background-color: #fcfaed;
 }
 
 @layer base {
   :root {
     /* Fills */
-    --color-bg: 0deg 0% 100%;
     --color-primary: 239deg 82% 65%;
-    --color-secondary: 292deg 99% 68%;
+    --color-secondary: 209deg 60% 42%;
+    --color-bg: 0deg 0% 100%;
 
     /* Header Colours */
     --header-pri: 239deg 62% 75%;
 
     /* Text Colours */
-    --text-pri: 239deg 82% 65%;
+    --text-pri: 43deg 100% 50%;
     --text-secondary: 0deg 0% 40%;
     --text-neutral: 0deg 0% 30%;
   }

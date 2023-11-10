@@ -7,17 +7,21 @@ import "./App.css";
 // Import Auth Provider
 
 // Import Components
-import { NavBar } from "./NavBar/NavBar.js";
+import { NavBar } from "./Components/NavBar/NavBar.js";
 
 // Import Pages
-import { HomePage } from "./Pages/HomePage.js";
+import { LandingPage } from "./Pages/LandingPage.js";
+import { LoginPage } from "./Pages/LoginPage.js";
+import { SearchPage } from "./Pages/SearchPage.js";
 
 function App() {
   return (
     <>
       <NavBar />
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="login" element={<LoginPage />} />
+        <Route path="search" element={<SearchPage />} />
       </Routes>
     </>
   );
