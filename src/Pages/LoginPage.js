@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+// Import Icons
+import { BackwardIcon } from "@heroicons/react/24/solid";
+
 export const LoginPage = () => {
   const [user, setUser] = useState({ user: "", password: "" });
   const navigate = useNavigate();
@@ -25,9 +28,18 @@ export const LoginPage = () => {
 
   return (
     <>
-      <div className="flex flex-row justify-center h-[100vh] pt-[2em] pb-[4em] px-[2em]">
-        <div className="flex flex-col w-full lg:w-[30%] justify-between text-center">
+      <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em]">
+        <div className="flex flex-col w-full lg:w-[30%] justify-between text-center ">
           <div>
+            <div className="absolute">
+              <BackwardIcon
+                className="h-6 w-6"
+                onClick={() => {
+                  navigate("/");
+                }}
+              />
+            </div>
+
             <h1 className="font-bold text-txtcolor-primary text-[2rem] pt-[20%] pb-[2em] text-left">
               Log In
             </h1>

@@ -9,7 +9,7 @@ export const LandingPage = () => {
 
   return (
     <>
-      <div className="flex flex-row justify-center h-[100vh] pt-[2em] pb-[4em] px-[2em]">
+      <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em]">
         <div className="flex flex-col w-full justify-between text-center ">
           <h1 className="font-bold text-[3rem] pt-[3em]">SESSIONS</h1>
 
