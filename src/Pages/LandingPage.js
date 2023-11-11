@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export const LandingPage = () => {
+export const LandingPage = ({ motion }) => {
   const navigate = useNavigate();
   const handleClick = () => {
     navigate("login");
@@ -10,7 +10,15 @@ export const LandingPage = () => {
   return (
     <>
       <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em] relative">
-        <div className="flex flex-col w-full justify-between text-center overflow-hidden ">
+        <motion.div
+          className="flex flex-col w-full justify-between text-center overflow-hidden "
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            delay: 0.1,
+            duration: 0.5,
+          }}
+        >
           <h1 className="font-bold text-[3rem] pt-[1.5em] lg:pt-[3em]">
             SESSIONS
           </h1>
@@ -23,7 +31,7 @@ export const LandingPage = () => {
               className="primary-cta-btn w-[100%] lg:w-[50%] "
             />
           </div>
-        </div>
+        </motion.div>
 
         <div className="">
           <svg

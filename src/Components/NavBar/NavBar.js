@@ -11,7 +11,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import "./NavBar.css";
 
 export const NavBar = () => {
-  const [navToggle, setNavToggle] = useState(true);
+  const [navToggle, setNavToggle] = useState(false);
   let location = useLocation();
 
   useEffect(() => {
