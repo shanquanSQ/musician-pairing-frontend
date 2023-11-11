@@ -22,7 +22,7 @@ body {
 @layer base {
   :root {
     /* Fills */
-    --color-primary: 239deg 82% 65%;
+    --color-primary: 43deg 100% 50%;
     --color-secondary: 209deg 60% 42%;
     --color-bg: 0deg 0% 100%;
 

@@ -1,12 +1,12 @@
 /* BUTTONS CSS */
 .primary-cta-btn {
-  @apply rounded-[1em] bg-fill-primary px-8 py-3 my-[0.5rem] text-sm font-semibold text-white transition focus:outline-none hover:bg-indigo-600 active:bg-indigo-600 active:scale-95;
+  @apply rounded-[1em] bg-fill-primary px-8 py-3 my-[0.5rem] text-sm font-semibold text-black transition focus:outline-none hover:bg-[hsl(43,100%,45%)] active:bg-[hsl(43,100%,45%)] active:scale-95;
 }
 .secondary-cta-btn {
-  @apply rounded-[1em] bg-fill-secondary px-8 py-3 my-[0.5rem] text-sm font-semibold text-white transition focus:outline-none hover:bg-indigo-600 active:bg-indigo-600 active:scale-95;
+  @apply rounded-[1em] bg-fill-secondary px-8 py-3 my-[0.5rem] text-sm font-semibold text-white transition focus:outline-none hover:bg-[hsl(209,60%,35%)] active:bg-[hsl(209,60%,35%)] active:scale-95;
 }
 
 /* INPUT FORMS */
 .primary-input-form {
-  @apply w-full h-[2rem] lg:h-[4rem] font-semibold text-[2rem] bg-transparent  text-black placeholder:text-txtcolor-secondary focus:outline-none  transition-[font-size]  focus:text-[1.9rem];
+  @apply w-full h-[2rem] lg:h-[4rem] font-semibold text-[2rem] bg-transparent  text-black placeholder:text-txtcolor-secondary focus:outline-none  transition-[font-size]  focus:text-[1.8rem];
 }

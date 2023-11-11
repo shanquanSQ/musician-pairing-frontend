@@ -4,6 +4,8 @@ import { useLocation } from "react-router-dom";
 
 //Import Icons
 import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/solid";
+import { UserIcon } from "@heroicons/react/24/solid";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 
 // Import specific styling
 import "./NavBar.css";
@@ -13,16 +15,16 @@ export const NavBar = () => {
   let location = useLocation();
 
   useEffect(() => {
-    console.log("location hook: ", location.pathname);
-    if (location.pathname == "/" || location.pathname == "/login") {
-      console.log("false toggled");
+    // console.log("location hook: ", location.pathname);
+    if (location.pathname === "/" || location.pathname === "/login") {
+      // console.log("false toggled");
       setNavToggle(false);
     }
     // if NOT on the LandingPage or Signup flow
     else {
-      console.log("other branch toggled");
+      // console.log("other branch toggled");
       if (navToggle === false) {
-        console.log("true toggled");
+        // console.log("true toggled");
         setNavToggle(true);
       }
     }
@@ -33,14 +35,13 @@ export const NavBar = () => {
       {navToggle && (
         <nav>
           <NavLink to="search">
-            <div>Search</div>
+            <MagnifyingGlassIcon className="h-6 w-6 nav" />
           </NavLink>
-          <NavLink to="profile">
-            <div>Profile </div>
+          <NavLink to="userprofile">
+            <UserIcon className="h-6 w-6 nav" />
           </NavLink>
-          <NavLink to="messages">
+          <NavLink to="jamchatroom">
             <ChatBubbleLeftRightIcon className="h-6 w-6 nav" />
-            {/* <div>Messages </div> */}
           </NavLink>
         </nav>
       )}

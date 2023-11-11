@@ -1,35 +1,45 @@
 import React, { useState } from "react";
+import { CategoryDropDown } from "../Components/CategoryDropDown/CategoryDropDown";
 
 export const SearchPage = () => {
-  const [user, setUser] = useState({ user: "", password: "" });
+  // const [user, setUser] = useState({ user: "", password: "" });
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSearchTerm, setSelectedSearchTerm] = useState("");
 
-  const handleChange = (ev) => {
-    let name = ev.target.name;
-    let value = ev.target.value;
+  // Axios GET Placeholders
+  const categoriesList = ["Instruments", "Jam History", "Genre", "Artist"];
+  // Need to be able to toggle based on what has been chosen for Categories.
+  const searchTermsList = ["apple", "orange", "pineapple", "grape"];
 
-    setUser((prevState) => {
-      return { ...prevState, [name]: value };
-    });
+  const handleChangeCategory = (ev) => {
+    setSelectedCategory(ev.target.id.toUpperCase());
+    // console.log(`selected category state in Search Page: ${selectedCategory}`);
   };
 
-  const handleClick = () => {
-    console.log(user);
+  const handleChangeSearchTerm = (ev) => {
+    setSelectedSearchTerm(ev.target.id.toUpperCase());
+    // console.log(
+    //   `selected searchterm state in Search Page: ${selectedSearchTerm}`
+    // );
   };
 
   const handleSubmit = (ev) => {
     ev.preventDefault();
+    alert(
+      "Will add some interactions so that search only works when both fields above are selected."
+    );
   };
 
   return (
     <>
       <>
         <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em] border-2 border-blue-300">
-          <div className="flex flex-col w-full lg:w-[30%] justify-between text-center">
+          <div className="flex flex-col w-full lg:w-[30%] justify-between ">
             <div className="flex flex-col pt-[2em] mb-[-10em]">
               <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-left ">
                 CATEGORY /
               </h1>
-              <input
+              {/* <input
                 type="text"
                 name="username"
                 onChange={handleChange}
@@ -37,6 +47,11 @@ export const SearchPage = () => {
                 autoComplete="off"
                 placeholder="USERNAME"
                 className="primary-input-form"
+              /> */}
+              <CategoryDropDown
+                initialterm="Categories"
+                inputdata={categoriesList}
+                handleSelect={handleChangeCategory}
               />
             </div>
 
@@ -44,7 +59,7 @@ export const SearchPage = () => {
               <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-left">
                 SEARCH /
               </h1>
-              <input
+              {/* <input
                 type="text"
                 name="password"
                 onChange={handleChange}
@@ -52,6 +67,12 @@ export const SearchPage = () => {
                 autoComplete="off"
                 placeholder="PASSWORD"
                 className="primary-input-form"
+              /> */}
+
+              <CategoryDropDown
+                initialterm="Search"
+                inputdata={searchTermsList}
+                handleSelect={handleChangeSearchTerm}
               />
             </div>
 
@@ -60,7 +81,7 @@ export const SearchPage = () => {
                 <input
                   type="button"
                   value="SEARCH"
-                  onClick={handleClick}
+                  onClick={handleSubmit}
                   className="secondary-cta-btn w-[100%] lg:w-[100%]"
                 />
               </form>

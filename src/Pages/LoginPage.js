@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 // Import Icons
 import { BackwardIcon } from "@heroicons/react/24/solid";
 
-export const LoginPage = () => {
+export const LoginPage = ({ motion }) => {
   const [user, setUser] = useState({ user: "", password: "" });
   const navigate = useNavigate();
 
@@ -29,11 +29,23 @@ export const LoginPage = () => {
   return (
     <>
       <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em]">
-        <div className="flex flex-col w-full lg:w-[30%] justify-between text-center ">
+        <motion.div
+          className="flex flex-col w-full lg:w-[30%] justify-between text-center"
+          initial={{ y: "20", opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{
+            delay: 0.1,
+            type: "spring",
+            mass: 0.4,
+            damping: 8,
+            //some bug here with staggerChildren. will take a look
+            staggerChildren: 2,
+          }}
+        >
           <div>
             <div className="absolute">
               <BackwardIcon
-                className="h-6 w-6"
+                className="h-6 w-6 text-blue-600 scale-100 transition-all hover:scale-[120%] active:scale-95"
                 onClick={() => {
                   navigate("/");
                 }}
@@ -44,7 +56,7 @@ export const LoginPage = () => {
               Log In
             </h1>
 
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col lg:gap-0 gap-[1em]">
               <input
                 type="text"
                 name="username"
@@ -56,7 +68,7 @@ export const LoginPage = () => {
               />
 
               <input
-                type="text"
+                type="password"
                 name="password"
                 onChange={handleChange}
                 value={user.password}
@@ -67,7 +79,10 @@ export const LoginPage = () => {
             </div>
           </div>
 
-          <div>
+          <motion.div
+            initial={{ y: "20", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+          >
             <form onSubmit={handleSubmit}>
               <input
                 type="button"
@@ -76,8 +91,8 @@ export const LoginPage = () => {
                 className="secondary-cta-btn w-[100%] lg:w-[100%]"
               />
             </form>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </>
   );
