@@ -71,21 +71,6 @@ export const ProfilePage = ({ motion }) => {
               </div>
             </div>
 
-            <div>
-              <h1 className="font-bold text-txtcolor-primary text-[1.2rem] text-left ">
-                GENRES
-              </h1>
-              <div className="text-[1.5rem] font-semibold leading-[1.2em] pr-[1em]">
-                {genreList.map((element, index) => {
-                  return (
-                    <div key={index} id={element} className="inline pr-[.5em]">
-                      {element.toUpperCase()} /
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
             <div className="flex flex-row flex-wrap gap-[3em]">
               <div>
                 <h1 className="font-bold text-txtcolor-primary text-[1.2rem] text-left">
@@ -103,6 +88,21 @@ export const ProfilePage = ({ motion }) => {
                 <p className="text-[3rem] font-semibold leading-[1em]">
                   {uniqueCollaborators}
                 </p>
+              </div>
+            </div>
+
+            <div>
+              <h1 className="font-bold text-txtcolor-primary text-[1.2rem] text-left ">
+                FAVOURITE GENRES
+              </h1>
+              <div className="text-[1.5rem] font-semibold leading-[1.2em] pr-[1em]">
+                {genreList.map((element, index) => {
+                  return (
+                    <div key={index} id={element} className="inline pr-[.5em]">
+                      {element.toUpperCase()} /
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

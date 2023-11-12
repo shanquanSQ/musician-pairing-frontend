@@ -5,10 +5,6 @@ export const LandingPage = ({ motion }) => {
   const [loadedVideo, setLoadedVideo] = useState(false);
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate("login");
-  };
-
   return (
     <>
       <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em] relative">
@@ -30,7 +26,19 @@ export const LandingPage = ({ motion }) => {
               <input
                 type="button"
                 value="SIGN IN"
-                onClick={handleClick}
+                onClick={() => {
+                  navigate("login");
+                }}
+                className="primary-cta-btn w-[100%] lg:w-[50%] "
+              />
+              <br />
+
+              <input
+                type="button"
+                value="NEW USER"
+                onClick={() => {
+                  navigate("signup");
+                }}
                 className="primary-cta-btn w-[100%] lg:w-[50%] "
               />
             </div>

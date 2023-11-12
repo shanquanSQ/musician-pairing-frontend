@@ -17,7 +17,12 @@ export const NavBar = () => {
 
   useEffect(() => {
     // console.log("location hook: ", location.pathname);
-    if (location.pathname === "/" || location.pathname === "/login") {
+    if (
+      location.pathname === "/" ||
+      location.pathname === "/login" ||
+      location.pathname === "/signup" ||
+      location.pathname === "/additionaldetails"
+    ) {
       setNavToggle(false);
     }
     // if NOT on the LandingPage or Signup flow
