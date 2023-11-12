@@ -17,7 +17,7 @@ import { LandingPage } from "./Pages/LandingPage.js";
 import { LoginPage } from "./Pages/LoginPage.js";
 import { SearchPage } from "./Pages/SearchPage.js";
 import { ProfilePage } from "./Pages/ProfilePage.js";
-import { JamChatroom } from "./Pages/JamChatroom.js";
+import { JamChatroomPage } from "./Pages/JamChatroomPage.js";
 
 function App() {
   return (
@@ -29,7 +29,10 @@ function App() {
         <Route path="search" element={<SearchPage motion={motion} />} />
 
         <Route path="userprofile" element={<ProfilePage motion={motion} />} />
-        <Route path="jamchatroom" element={<JamChatroom motion={motion} />} />
+        <Route
+          path="jamchatroom"
+          element={<JamChatroomPage motion={motion} />}
+        />
       </Routes>
     </>
   );

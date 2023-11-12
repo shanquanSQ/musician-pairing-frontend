@@ -7,7 +7,7 @@ export const SearchPage = ({ motion }) => {
   const [selectedSearchTerm, setSelectedSearchTerm] = useState("");
 
   // Axios GET Placeholders
-  const categoriesList = ["Instruments", "Jam History", "Genre", "Artist"];
+  const categoriesList = ["Instruments", "Genre", "Artist"];
   // Need to be able to toggle based on what has been chosen for Categories.
   const searchTermsList = ["apple", "orange", "pineapple", "grape"];
 
@@ -33,7 +33,7 @@ export const SearchPage = ({ motion }) => {
   return (
     <>
       <>
-        <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em] border-2 border-blue-300">
+        <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em]">
           <motion.div
             className="flex flex-col w-full lg:w-[30%] justify-between"
             initial={{ opacity: 0 }}
@@ -44,7 +44,7 @@ export const SearchPage = ({ motion }) => {
             }}
           >
             <div className="flex flex-col pt-[2em] mb-[-10em]">
-              <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-left ">
+              <h1 className="font-bold text-txtcolor-primary text-[1.2rem] lg:text-[1.5rem] text-left ">
                 CATEGORY /
               </h1>
               {/* <input
@@ -64,7 +64,7 @@ export const SearchPage = ({ motion }) => {
             </div>
 
             <div className="flex flex-col">
-              <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-left">
+              <h1 className="font-bold text-txtcolor-primary text-[1.2rem] lg:text-[1.5rem] text-left">
                 SEARCH /
               </h1>
               {/* <input

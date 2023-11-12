@@ -30,7 +30,7 @@ export const CategoryDropDown = ({ inputdata, initialterm, handleSelect }) => {
         </button>
 
         <div
-          className={`dropdown-content max-h-[10rem] overflow-y-auto overflow-x-hidden mt-[.5em] ${
+          className={`dropdown-content max-h-[10rem] shadow-md overflow-y-auto overflow-x-hidden mt-[.5em] ${
             showDropDown ? "activedropdown" : ""
           }`}
         >

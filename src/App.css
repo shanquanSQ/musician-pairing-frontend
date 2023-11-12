@@ -11,6 +11,11 @@
   @apply w-full h-[2rem] lg:h-[4rem] font-semibold text-[2rem] bg-transparent  text-black placeholder:text-txtcolor-secondary focus:outline-none  transition-[font-size]  focus:text-[1.8rem];
 }
 
+/* IMAGE WRAPPER */
+.image-wrapper {
+  @apply flex flex-row justify-center;
+}
+
 /* VIDEO */
 .video-wrapper {
   position: absolute;
