@@ -10,3 +10,27 @@
 .primary-input-form {
   @apply w-full h-[2rem] lg:h-[4rem] font-semibold text-[2rem] bg-transparent  text-black placeholder:text-txtcolor-secondary focus:outline-none  transition-[font-size]  focus:text-[1.8rem];
 }
+
+/* VIDEO */
+.video-wrapper {
+  position: absolute;
+  top: 0;
+  display: flex;
+  justify-content: center;
+
+  background-color: white;
+  border: 0 solid;
+
+  height: 100%;
+  width: 100%;
+
+  overflow: hidden;
+  z-index: -2;
+}
+
+/* id selector */
+#videosrc {
+  border: 0 solid;
+  width: 100vw;
+  object-fit: cover;
+}

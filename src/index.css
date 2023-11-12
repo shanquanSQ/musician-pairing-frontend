@@ -17,6 +17,8 @@ body {
   /* font-family: 'Libre Bodoni', serif; */
   font-family: "Libre Franklin", sans-serif;
   background-color: #fcfaed;
+
+  -webkit-tap-highlight-color: transparent;
 }
 
 @layer base {

@@ -7,7 +7,7 @@
 }
 
 .dropdown-container div {
-  @apply block border-b-[1px] border-slate-200 py-[.2em] px-[1em] cursor-pointer z-[10];
+  @apply block py-[.3em] pl-[.3em] origin-left text-left cursor-pointer z-[10];
 }
 
 .dropdown-content {

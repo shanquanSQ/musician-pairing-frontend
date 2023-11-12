@@ -26,10 +26,10 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage motion={motion} />} />
         <Route path="login" element={<LoginPage motion={motion} />} />
-        <Route path="search" element={<SearchPage />} />
+        <Route path="search" element={<SearchPage motion={motion} />} />
 
-        <Route path="userprofile" element={<ProfilePage />} />
-        <Route path="jamchatroom" element={<JamChatroom />} />
+        <Route path="userprofile" element={<ProfilePage motion={motion} />} />
+        <Route path="jamchatroom" element={<JamChatroom motion={motion} />} />
       </Routes>
     </>
   );
