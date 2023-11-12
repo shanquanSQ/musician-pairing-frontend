@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { CategoryDropDown } from "../Components/CategoryDropDown/CategoryDropDown";
 
-export const SearchPage = () => {
+export const SearchPage = ({ motion }) => {
   // const [user, setUser] = useState({ user: "", password: "" });
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSearchTerm, setSelectedSearchTerm] = useState("");
 
   // Axios GET Placeholders
-  const categoriesList = ["Instruments", "Jam History", "Genre", "Artist"];
+  const categoriesList = ["Instruments", "Genre", "Artist"];
   // Need to be able to toggle based on what has been chosen for Categories.
   const searchTermsList = ["apple", "orange", "pineapple", "grape"];
 
@@ -33,10 +33,18 @@ export const SearchPage = () => {
   return (
     <>
       <>
-        <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em] border-2 border-blue-300">
-          <div className="flex flex-col w-full lg:w-[30%] justify-between ">
+        <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em]">
+          <motion.div
+            className="flex flex-col w-full lg:w-[30%] justify-between"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              delay: 0.1,
+              duration: 0.5,
+            }}
+          >
             <div className="flex flex-col pt-[2em] mb-[-10em]">
-              <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-left ">
+              <h1 className="font-bold text-txtcolor-primary text-[1.2rem] lg:text-[1.5rem] text-left ">
                 CATEGORY /
               </h1>
               {/* <input
@@ -56,7 +64,7 @@ export const SearchPage = () => {
             </div>
 
             <div className="flex flex-col">
-              <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-left">
+              <h1 className="font-bold text-txtcolor-primary text-[1.2rem] lg:text-[1.5rem] text-left">
                 SEARCH /
               </h1>
               {/* <input
@@ -86,7 +94,7 @@ export const SearchPage = () => {
                 />
               </form>
             </div>
-          </div>
+          </motion.div>
         </div>
       </>
     </>
