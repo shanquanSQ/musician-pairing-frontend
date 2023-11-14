@@ -16,6 +16,11 @@
   @apply flex flex-row justify-center;
 }
 
+/* TEXTAREA */
+textarea {
+  resize: none;
+}
+
 /* VIDEO */
 .video-wrapper {
   position: absolute;

@@ -20,6 +20,7 @@ import { ProfilePage } from "./Pages/ProfilePage.js";
 import { JamChatroomPage } from "./Pages/JamChatroomPage.js";
 import { SignUpPage } from "./Pages/SignUpPage.js";
 import { SignUpDetailsPage } from "./Pages/SignUpDetailsPage.js";
+import { SingleJamRoomPage } from "./Pages/SingleJamRoomPage.js";
 
 function App() {
   return (
@@ -39,6 +40,11 @@ function App() {
         <Route
           path="jamchatroom"
           element={<JamChatroomPage motion={motion} />}
+        ></Route>
+
+        <Route
+          path="/:chatId/jamroom"
+          element={<SingleJamRoomPage motion={motion} />}
         />
       </Routes>
     </>
