@@ -21,16 +21,17 @@ export const JamRoomBubble = ({ roomdata }) => {
           <h1 className="font-semibold text-[1.2rem] text-slate-700">
             {roomdata && roomdata.name}
           </h1>
-          <p className="font-medium text-[1.2rem] text-txtcolor-primary">
-            genres blablabla
+          <p className="font-medium text-[1.2rem] text-txtcolor-primary balance">
+            {roomdata && roomdata.genresPlayed}
           </p>
-          <p className="font-medium text-black">Looking For:</p>
-          <p>Guitarists, Bassists</p>
+          <p className="font-medium text-black text-[1rem]">Looking For:</p>
+          <p>
+            {roomdata && roomdata.instrumentsWanted
+              ? roomdata.instrumentsWanted
+              : "Not looking for any particular instruments"}
+          </p>
 
-          <p className="py-[1em]">
-            some description of the jam, maybe just shitposting or talk about
-            how often they wanna meet up etc.
-          </p>
+          <p className="py-[1em]">{roomdata && roomdata.description}</p>
           <p>{roomdata && roomdata.updatedAt}</p>
         </div>
       </NavLink>

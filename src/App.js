@@ -43,7 +43,7 @@ function App() {
         ></Route>
 
         <Route
-          path="/:chatId/jamroom"
+          path="/:chatroomId/jamroom"
           element={<SingleJamRoomPage motion={motion} />}
         />
       </Routes>
