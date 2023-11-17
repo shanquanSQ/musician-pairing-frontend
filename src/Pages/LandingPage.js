@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const LandingPage = ({ motion }) => {
   const [loadedVideo, setLoadedVideo] = useState(false);
+
   const navigate = useNavigate();
+
+  const titletext = "SESSIONS";
 
   return (
     <>
@@ -18,9 +21,26 @@ export const LandingPage = ({ motion }) => {
               duration: 0.5,
             }}
           >
-            <h1 className="font-bold text-[3rem] pt-[1.5em] lg:pt-[3em]">
-              SESSIONS
-            </h1>
+            <motion.h1 className="font-bold text-[3rem] md:text-[6rem] lg:text-[10rem] leading-0 pt-[1.5em] lg:pt-[0em] md:pt-[0em] drop-shadow-md">
+              {titletext}
+              {/* {titletext.split("").map((char, index) => {
+                return (
+                  <li
+                    className="inline"
+                    initial={{ y: 1000 }}
+                    animate={{ y: 0 }}
+                    transition={{
+                      type: "spring",
+                      mass: 0.4,
+                      damping: 8,
+                      delay: 2,
+                    }}
+                  >
+                    {char}
+                  </li>
+                );
+              })} */}
+            </motion.h1>
 
             <div>
               <input

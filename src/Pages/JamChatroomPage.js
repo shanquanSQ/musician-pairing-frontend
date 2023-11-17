@@ -20,13 +20,12 @@ export const JamChatroomPage = ({ motion }) => {
     // Get chatroom information.
     // This should be tied to User's joined rooms.
     // Before auth, just hardcoding the usersPrimaryKey.
-    console.log("Run getRoomData");
+    console.log("getting room data");
     let userRoomInformation = await axios.get(
       `${process.env.REACT_APP_BACKEND_URL}/users/${usersPrimaryKey}/joinedChatrooms`
     );
 
     if (userRoomInformation.data.success === true) {
-      console.log("success!");
       setUserRoomData(userRoomInformation.data.data);
     } else {
       alert("Unable to get user's joined room data.");
@@ -39,10 +38,10 @@ export const JamChatroomPage = ({ motion }) => {
         <div className="flex flex-col w-full lg:w-[30%] justify-between overflow-x-hidden overflow-y-auto">
           <div className="flex flex-col pt-[2em] mb-[-10em]">
             <h1 className="font-bold text-txtcolor-primary text-[1.5rem] pb-[1em] text-left">
-              JAM ROOMS
+              JOINED JAM ROOMS
             </h1>
 
-            {/* <button
+            <button
               onClick={() => {
                 console.log(userRoomData);
               }}
@@ -50,13 +49,14 @@ export const JamChatroomPage = ({ motion }) => {
             >
               View room data state
             </button>
-            <br /> */}
+            <br />
 
             <div className="pr-[2em]">
               {userRoomData &&
                 userRoomData.map((elementdata, index) => {
                   return (
                     <div key={index} className="inline pr-[.5em]">
+                      {console.log("element data is: ", elementdata)}
                       <JamRoomBubble roomdata={elementdata} />
                     </div>
                   );
