@@ -1,20 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {CfmRejButton} from "../Components/Buttons/CfmRejButton"
+import {EditButton} from "../Components/Buttons/EditButton"
+import {DeleteButton} from "../Components/Buttons/DeleteButton"
+import {ProfilePic} from "../Components/ProfilePage/ProfilePic"
+import {InstrumentTable} from "../Components/ProfilePage/InstrumentTable"
 
 export const ProfilePage = ({ motion }) => {
   const navigate = useNavigate();
+  const [userName, setUserName] = useState('Dummy User here')
+  const [editedFields, setEditedFields] = useState(new Set())
+  const [isOwnPage, setIsOwnPage] = useState(true); //this will later setup depending on whether username on page matches login user
 
+  useEffect(()=>{
+    const getAllUserInfo = async () => {
+      const [user, instruments, genres, artists, personalclips] = await Promise.all([
+
+      ])
+    }
+    
+    //might need to do a if user exists
+    /* 
+    pull for current user:
+    -All data from users table
+    -All data from instruments, users_instruments, genres, artists, songs, personal_video_clips table
+
+    */
+
+  },[])
   // Lists will probably come from server as a prop.
   // Not sure if server request will be done here or in parent component.
-  const instrumentsList = [
-    "Guitar",
-    "Keyboard",
-    "Bass",
-    "Triangle",
-    "castanets",
-    "flute",
-  ];
-
+  
   const genreList = ["Rock", "Pop", "Hip Hop", "Electronic", "Jazz", "Country"];
 
   const artistsList = [
@@ -25,8 +41,6 @@ export const ProfilePage = ({ motion }) => {
     "Elvis Presley",
     "Spongebob OST",
   ];
-
-  const username = "TIMMY P.";
 
   const numberOfSessions = "65";
   const uniqueCollaborators = "30";
@@ -41,35 +55,27 @@ export const ProfilePage = ({ motion }) => {
                 PROFILE
               </h1> */}
 
-              <div className="flex flex-row justify-center pb-[2em]">
-                <div className="w-[15em] h-[15em] rounded-lg overflow-hidden">
-                  <img
-                    src="https://firebasestorage.googleapis.com/v0/b/dev-portfolio-sq.appspot.com/o/random%2Fnapoleon-dynamite36641.jpeg?alt=media&token=436c7b15-7324-4311-9fb1-ccab8e0b7d56"
-                    alt="profile"
-                    className="h-full object-cover"
-                  />
-                </div>
-              </div>
+              <ProfilePic isOwnPage={isOwnPage} displayedUserId='4' storedURL = "https://firebasestorage.googleapis.com/v0/b/dev-portfolio-sq.appspot.com/o/random%2Fnapoleon-dynamite36641.jpeg?alt=media&token=436c7b15-7324-4311-9fb1-ccab8e0b7d56" />
 
-              <h1 className="font-bold text-slate-800 text-[2rem]  ">
-                {username}
+              <h1 className="font-bold text-slate-800 text-[2rem] flex flex-row  ">
+              {editedFields.has('username') ? 
+              <div>
+              <input
+                type="text"
+                id="editUsername"
+                placeholder="Name"
+                value = {userName}
+                onChange = {(e)=>setUserName(e.target.value)}
+              />
+              <CfmRejButton field = 'username' type='confirm' setEditedFields = {setEditedFields} clickFunc={() => { alert('insert code for submitting to BE') }} />
+              <CfmRejButton field = 'username' type='reject' setEditedFields = {setEditedFields} clickFunc={() => { alert('insert code for resetting to original input') }} />
+              </div>
+              :userName}
+                <EditButton field = "username" editedFields = {editedFields} setEditedFields = {setEditedFields} isOwnPage={isOwnPage} />
               </h1>
             </div>
 
-            <div>
-              <h1 className="font-bold text-txtcolor-primary text-[1.2rem] text-left ">
-                INSTRUMENTS
-              </h1>
-              <div className="text-[1.5rem] font-semibold leading-[1.2em] pr-[1em]">
-                {instrumentsList.map((element, index) => {
-                  return (
-                    <div key={index} id={element} className="inline pr-[.5em]">
-                      {element.toUpperCase()} /
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <InstrumentTable isOwnPage = {isOwnPage} displayedUserId = '4'/>
 
             <div className="flex flex-row flex-wrap gap-[3em]">
               <div>
