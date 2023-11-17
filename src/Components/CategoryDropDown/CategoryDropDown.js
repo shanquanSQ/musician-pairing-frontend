@@ -17,6 +17,7 @@ export const CategoryDropDown = ({ inputdata, initialterm, handleSelect }) => {
   const handleClickDropdown = (ev) => {
     setShowDropDown(!showDropDown);
   };
+  
 
   return (
     <>

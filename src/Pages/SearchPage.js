@@ -1,18 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CategoryDropDown } from "../Components/CategoryDropDown/CategoryDropDown";
+import axios from "axios";
+import {BACKEND_URL} from '../constants.js';
 
 export const SearchPage = ({ motion }) => {
   // const [user, setUser] = useState({ user: "", password: "" });
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSearchTerm, setSelectedSearchTerm] = useState("");
+  const [searchTermsList, setSearchTermsList] = useState([]);
 
   // Axios GET Placeholders
-  const categoriesList = ["Instruments", "Genre", "Artist"];
+  const categoriesList = ["Instruments", "Genres", "Artists"];
   // Need to be able to toggle based on what has been chosen for Categories.
-  const searchTermsList = ["apple", "orange", "pineapple", "grape"];
+  //const searchTermsList = ["apple", "orange", "pineapple", "grape"];
 
-  const handleChangeCategory = (ev) => {
+  const handleChangeCategory = async (ev) => {
+    console.log(ev)
+    if (ev.target.id !== "") {
+      const response = await axios.get(`${BACKEND_URL}/${ev.target.id.toLowerCase()}`)
+      const searchTerms = response.data.map((entry)=> entry.name);
+      setSearchTermsList(searchTerms);
+    } else {
+      setSearchTermsList([]);
+    }
     setSelectedCategory(ev.target.id.toUpperCase());
+    
     // console.log(`selected category state in Search Page: ${selectedCategory}`);
   };
 
@@ -25,6 +37,10 @@ export const SearchPage = ({ motion }) => {
 
   const handleSubmit = (ev) => {
     ev.preventDefault();
+    if (!selectedCategory || !selectedSearchTerm){
+      alert("Please select filter criteria")
+    }
+    //insert search here
     alert(
       "Will add some interactions so that search only works when both fields above are selected."
     );
