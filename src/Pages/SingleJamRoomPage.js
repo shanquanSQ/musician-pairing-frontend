@@ -7,6 +7,7 @@ import { SpeechBubble } from "../Components/SpeechBubble/SpeechBubble";
 
 // Import Sockets
 import { io } from "socket.io-client"; // io is a function to call an individual socket. the package for frontend(client side) is npm i socket.io-client
+import { AttachmentModal } from "../Components/AttachmentModal/AttachmentModal";
 const socket = io(`http://localhost:8080`);
 
 export const SingleJamRoomPage = () => {
@@ -18,6 +19,8 @@ export const SingleJamRoomPage = () => {
   const [userMessage, setUserMessage] = useState({});
   const [currentTypingUser, setCurrentTypingUser] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+
+  const [attachmentModalToggle, setAttachmentModalToggle] = useState(false);
 
   const myRef = useRef(null);
 
@@ -179,6 +182,14 @@ export const SingleJamRoomPage = () => {
     return results;
   };
 
+  const handleAttachmentModal = () => {
+    setAttachmentModalToggle(!attachmentModalToggle);
+  };
+
+  const removeModal = () => {
+    setAttachmentModalToggle(false);
+  };
+
   return (
     <>
       <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em] ">
@@ -259,6 +270,13 @@ export const SingleJamRoomPage = () => {
               </div>
               <div>
                 <button
+                  onClick={handleAttachmentModal}
+                  className="bg-slate-700 px-[1em] text-white font-semibold rounded-md active:outline-none scale-100 transition-all active:scale-95 mr-[1em]"
+                >
+                  UPLOAD
+                </button>
+
+                <button
                   onClick={handleSubmitMessage}
                   className="bg-fill-secondary px-[1em] text-white font-semibold rounded-md active:outline-none scale-100 transition-all active:scale-95"
                 >
@@ -268,6 +286,15 @@ export const SingleJamRoomPage = () => {
             </div>
           </div>
         </div>
+
+        {/* MODALS GO HERE */}
+        {attachmentModalToggle && <AttachmentModal removeModal={removeModal} />}
+        {attachmentModalToggle && (
+          <div
+            onClick={removeModal}
+            className="fixed top-0 left-0 w-[100vw] h-full bg-black z-[9] transition-all opacity-50"
+          ></div>
+        )}
       </div>
     </>
   );
