@@ -11,8 +11,8 @@ export const SpeechBubble = ({ messagedata, index, userinfo }) => {
     console.log(
       "maybe functionality to edit messages in a modal? low priority!"
     );
-    // console.log(messagedata);
-    console.log("user info is: ", userinfo);
+    console.log(messagedata);
+    // console.log("user info is: ", userinfo);
   };
 
   const handleClickProfilePicture = () => {
