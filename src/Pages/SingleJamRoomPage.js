@@ -14,6 +14,7 @@ export const SingleJamRoomPage = () => {
   const [roomData, setRoomData] = useState("");
   const [roomDetails, setRoomDetails] = useState("");
   const [roomUsers, setRoomUsers] = useState("");
+  const [roomAttachments, setRoomAttachments] = useState("");
 
   const [userMessage, setUserMessage] = useState("");
   const [currentTypingUser, setCurrentTypingUser] = useState("");
@@ -38,6 +39,7 @@ export const SingleJamRoomPage = () => {
     getChatroomDetails();
     getChatroomInfo();
     getChatroomUsers();
+    getChatroomAttachments();
   }, []);
 
   // Interval for checking user-typing emit from server
@@ -107,9 +109,21 @@ export const SingleJamRoomPage = () => {
 
     if (allUsers.data.success === true) {
       setRoomUsers(allUsers.data.data);
-      // console.log("room details are set as: ", allUsers);
     } else {
       alert("Unable to get Chatroom Details");
+    }
+  };
+
+  const getChatroomAttachments = async () => {
+    let allAttachments = await axios.get(
+      `${process.env.REACT_APP_BACKEND_URL}/chatrooms/${chatroomId}/getAllChatroomAttachments`
+    );
+
+    if (allAttachments.data.success === true) {
+      console.log("SUCCESSFUL TRUE");
+      setRoomAttachments(allAttachments.data.data);
+    } else {
+      alert("Unable to get Chatroom Attachements");
     }
   };
 
@@ -137,7 +151,7 @@ export const SingleJamRoomPage = () => {
     }
   };
 
-  // Handle Input
+  // Handle Text Input
   const handleTextChange = (ev) => {
     let name = ev.target.name;
     let value = ev.target.value;
@@ -154,6 +168,12 @@ export const SingleJamRoomPage = () => {
   const checkUser = (messageDetails) => {
     let list = [...roomUsers];
     let results = list.filter((item) => item.id == messageDetails.authorId);
+    return results;
+  };
+
+  const checkMessageId = (messageDetails) => {
+    let list = [...roomAttachments];
+    let results = list.filter((item) => item.messageId == messageDetails.id);
     return results;
   };
 
@@ -179,12 +199,7 @@ export const SingleJamRoomPage = () => {
 
             <button
               onClick={() => {
-                // sortUserDetails();
-                console.log(roomData);
-                // console.log(`chat id is ${chatroomId}. `);
-                // console.log(
-                //   `chat data is id is ${JSON.stringify(roomData[1])}. `
-                // );
+                console.log(roomAttachments);
               }}
               className="bg-red-500 px-2 py-1"
             >
@@ -210,6 +225,7 @@ export const SingleJamRoomPage = () => {
                             messagedata={elementdata}
                             index={index}
                             userinfo={checkUser(elementdata)[0]}
+                            attachmentinfo={checkMessageId(elementdata)[0]}
                           />
                         </div>
                       </>
@@ -225,6 +241,7 @@ export const SingleJamRoomPage = () => {
                             messagedata={elementdata}
                             index={index}
                             userinfo={checkUser(elementdata)[0]}
+                            attachmentinfo={checkMessageId(elementdata)[0]}
                           />
                         </div>
                       </>
@@ -251,18 +268,6 @@ export const SingleJamRoomPage = () => {
                 >
                   UPLOAD
                 </button>
-                {/* {fileUploadURL == null ? (
-                  <button
-                    onClick={handleAttachmentModal}
-                    className="bg-slate-700 px-[1em] py-[.2em] text-white font-semibold rounded-md active:outline-none scale-100 transition-all active:scale-95 mr-[1em]"
-                  >
-                    UPLOAD
-                  </button>
-                ) : (
-                  <button className="bg-fill-primary px-[1em] py-[.2em] text-black font-semibold rounded-md active:outline-none scale-100 transition-all active:scale-95 mr-[1em]">
-                    UPLOADED
-                  </button>
-                )} */}
 
                 <button
                   onClick={handleSubmitMessage}
@@ -282,6 +287,7 @@ export const SingleJamRoomPage = () => {
             userId={userId}
             setRoomData={setRoomData}
             chatroomId={chatroomId}
+            refreshAttachments={getChatroomAttachments}
           />
         )}
         {attachmentModalToggle && (

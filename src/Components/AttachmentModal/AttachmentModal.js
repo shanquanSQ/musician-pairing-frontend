@@ -13,18 +13,18 @@ const socket = io(`http://localhost:8080`);
 export const AttachmentModal = ({
   userId,
   removeModal,
-  setRoomData,
   chatroomId,
+  refreshAttachments,
 }) => {
   const [uploadedFile, setUploadFile] = useState({
     fileInputFile: null,
   });
 
   const [userMessage, setUserMessage] = useState("");
-  const [generatedMessageId, setGeneratedMessageId] = useState(null);
-  const [fileUploadURL, setFileUploadURL] = useState(null);
 
-  const STORAGE_KEY = `userattachments/${userId}/`; // This corresponds to the Firebase branch/document
+  const STORAGE_KEY = `userattachments/user${userId}/chatroom${chatroomId}/`; // This corresponds to the Firebase branch/document
+  const ACCEPTED_IMAGE_FORMATS = ["image/jpeg", "image/png", "image/gif"];
+  const ACCEPTED_VIDEO_FORMATS = ["video/mp4"];
 
   const handleTextChange = (ev) => {
     let name = ev.target.name;
@@ -37,42 +37,41 @@ export const AttachmentModal = ({
     socket.emit("user-typing", userId);
   };
 
-  const submitData = () => {
-    // Create a reference to the full path of the file. This path will be used to upload to Firebase Storage
-    if (
-      uploadedFile.fileInputFile === undefined ||
-      uploadedFile.fileInputFile === null
-    ) {
-      alert("You need to upload a picture!");
-    } else {
-      const storageRef = sRef(
-        storage,
-        STORAGE_KEY + uploadedFile.fileInputFile.name
-      );
+  // const submitData = () => {
+  //   // Create a reference to the full path of the file. This path will be used to upload to Firebase Storage
+  //   if (
+  //     uploadedFile.fileInputFile === undefined ||
+  //     uploadedFile.fileInputFile === null
+  //   ) {
+  //     alert("You need to upload a picture!");
+  //   } else {
+  //     const storageRef = sRef(
+  //       storage,
+  //       STORAGE_KEY + uploadedFile.fileInputFile.name
+  //     );
 
-      // console.log(uploadedFile.fileInputFile.name);
+  //     // console.log(uploadedFile.fileInputFile.name);
 
-      uploadBytes(storageRef, uploadedFile.fileInputFile).then((snapshot) => {
-        console.log("uploaded a file!");
-        getDownloadURL(storageRef, uploadedFile.fileInputFile.name).then(
-          (fileUrl) => writeData(fileUrl)
-        );
-      });
-    }
+  //     uploadBytes(storageRef, uploadedFile.fileInputFile).then((snapshot) => {
+  //       console.log("uploaded a file!");
+  //       getDownloadURL(storageRef, uploadedFile.fileInputFile.name).then(
+  //         (fileUrl) => writeData(fileUrl)
+  //       );
+  //     });
+  //   }
 
-    // removeModal();
-  };
+  //   // removeModal();
+  // };
 
-  // functions to push to Database
-  const writeData = async (photoURL) => {
-    console.log("writeData function: ", photoURL);
-    setFileUploadURL(photoURL);
-  };
+  // // functions to push to Database
+  // const writeData = async (photoURL) => {
+  //   console.log("writeData function: ", photoURL);
+  //   setFileUploadURL(photoURL);
+  // };
 
   const handleSubmitMessage = (ev) => {
     ev.preventDefault();
-    postNewMessage();
-    // submitData(); // Posting Attachment Method goes in the async function here.
+    postNewMessage(); // All Consecutive Functions have to go in here (AXIOS GET -> AXIOS GET -> AXIOS POST)
 
     console.log("DONE!");
   };
@@ -119,13 +118,23 @@ export const AttachmentModal = ({
             .then((fileUrl) => (uploadURL = fileUrl))
             .then(async () => {
               // POST the attachment - message relationship
+
+              // console.log("the data: ", newMessage.data.data);
+              // console.log("the file: ", uploadedFile.fileInputFile);
+              // console.log("the filetype: ", uploadedFile.fileInputFile.type);
+              // console.log("type is: ", typeof uploadedFile.fileInputFile.type);
+
               let newAttachment = await axios.post(
                 `${process.env.REACT_APP_BACKEND_URL}/users/postMessageAttachment`,
                 {
                   mediaURL: uploadURL,
                   messageId: newMessage.data.data.id,
+                  chatroomId: chatroomId,
+                  fileType: uploadedFile.fileInputFile.type,
                 }
               );
+
+              await refreshAttachments();
 
               console.log(
                 "Posted attachment to database, the response: ",
@@ -136,57 +145,22 @@ export const AttachmentModal = ({
         });
       }
 
-      // // POST the attachment - message relationship
-      // let newAttachment = await axios.post(
-      //   `${process.env.REACT_APP_BACKEND_URL}/users/postMessageAttachment`,
-      //   {
-      //     mediaURL: uploadURL,
-      //     messageId: newMessage.data.data.id,
-      //   }
-      // );
-
-      // console.log(
-      //   "Posted attachment to database, the response: ",
-      //   newAttachment
-      // );
-
-      // setGeneratedMessageId(newMessage.data.data.id);
-
-      // needs to run within this async function as it is using state in its Request Body.
-      // postMessageAttachmentToDatabase();
-      console.log("ended");
-
       socket.emit("send-message", newMessage.data.data, chatroomId);
     } else {
       alert("Please key in a message");
     }
   };
 
-  const postMessageAttachmentToDatabase = async () => {
-    console.log("entering post attachment");
-    console.log(fileUploadURL);
-    console.log(generatedMessageId);
-    let newAttachment = await axios.post(
-      `${process.env.REACT_APP_BACKEND_URL}/users/postMessageAttachment`,
-      {
-        mediaURL: fileUploadURL,
-        messageId: generatedMessageId,
-      }
-    );
-
-    console.log("Posted attachment to database, the response: ", newAttachment);
-  };
-
   return (
     <>
-      <div className=" absolute flex flex-col top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[90%] lg:w-[30%] h-[80%] bg-white rounded-md border py-[2em] px-[1em] shadow-sm z-[90] gap-[1em]">
+      <div className=" absolute flex flex-col top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[90%] md:w-[50%] lg:w-[50%] h-[80%] bg-white rounded-md border py-[2em] px-[1em] shadow-sm z-[90] gap-[1em]">
         <p className="text-txtcolor-primary font-bold text-center pb-[1em] text-xl border-b-[1px] border-slate-200">
           ATTACH
         </p>
 
         <div className="flex flex-col justify-center w-[100%] h-[100%] bg-slate-300 rounded-[3%] overflow-hidden">
           {uploadedFile.fileInputFile === null ||
-          uploadedFile.fileInputFile === undefined ? (
+          document.getElementById("fileinputform").getAttribute("value") ? (
             <h1 className="text-center">Upload An Image or Video</h1>
           ) : (
             <img
@@ -197,20 +171,35 @@ export const AttachmentModal = ({
           )}
         </div>
 
-        <form className="text-center">
+        <form id="docpicker" className="text-center">
           {/* some kind of pre-processing is already done, so fileInputValue doesnt need to be */}
           <input
+            id="fileinputform"
             type="file"
             name="fileUpload"
-            value={uploadedFile.fileInputValue}
+            value={
+              uploadedFile.fileInputValue != null
+                ? ""
+                : uploadedFile.fileInputvalue
+            }
             onChange={(ev) => {
-              // console.log(ev.target.files);
-              setUploadFile({
-                fileInputFile: ev.target.files[0],
-                fileInputValue: ev.target.fileUpload,
-              });
+              if (
+                ev.target.files[0] &&
+                (ACCEPTED_IMAGE_FORMATS.includes(ev.target.files[0].type) ||
+                  ACCEPTED_VIDEO_FORMATS.includes(ev.target.files[0].type))
+              ) {
+                setUploadFile({
+                  fileInputFile: ev.target.files[0],
+                  fileInputValue: ev.target.fileUpload,
+                });
+              } else {
+                alert("Only accepts JPEG/PNG/GIF and MP4!");
+                setUploadFile({
+                  fileInputFile: null,
+                });
+              }
             }}
-            className="file-input file-input-bordered file w-full max-w-xs "
+            className="text-txtcolor-primary w-full max-w-xs"
           />
         </form>
 
@@ -242,8 +231,10 @@ export const AttachmentModal = ({
 
         <button
           onClick={() => {
-            console.log(fileUploadURL);
-            console.log(generatedMessageId);
+            let item = document.getElementById("docpicker");
+
+            console.log(item);
+            console.log(uploadedFile);
           }}
         >
           check
