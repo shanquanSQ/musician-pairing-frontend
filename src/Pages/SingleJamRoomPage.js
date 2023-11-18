@@ -11,6 +11,7 @@ import { io } from "socket.io-client"; // io is a function to call an individual
 const socket = io(`http://localhost:8080`);
 
 export const SingleJamRoomPage = () => {
+  const [socketRoomId, setSocketRoomId] = useState(null);
   const [roomData, setRoomData] = useState("");
   const [roomDetails, setRoomDetails] = useState("");
   const [roomUsers, setRoomUsers] = useState("");
@@ -36,6 +37,8 @@ export const SingleJamRoomPage = () => {
 
   // Make a separate axios.get to get information about specific jamroom.
   useEffect(() => {
+    console.log("join room ", chatroomId);
+    socket.emit("join-room", chatroomId);
     getChatroomDetails();
     getChatroomInfo();
     getChatroomUsers();
@@ -63,12 +66,18 @@ export const SingleJamRoomPage = () => {
       setRoomData((prevState) => {
         return [...prevState, receiveddata];
       });
+      console.log("received message");
     });
 
     socket.on("user-typing-response", (typinguser) => {
       console.log(`User of Id ${typinguser} is typing`);
+      // console.log("user typing, socket id is: ", socket.id);
       setIsTyping(true); // Displays typing message
       setCurrentTypingUser(typinguser);
+    });
+
+    socket.on("refresh-attachments", () => {
+      getChatroomAttachments();
     });
   }, [socket]);
 
@@ -160,7 +169,7 @@ export const SingleJamRoomPage = () => {
       return { ...prevState, [name]: value };
     });
 
-    socket.emit("user-typing", userId);
+    socket.emit("user-typing", userId, chatroomId);
   };
 
   // Filter Individual Message Details into each Speech Bubble.
@@ -193,7 +202,7 @@ export const SingleJamRoomPage = () => {
             <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-center balance">
               {roomDetails && roomDetails.name}
             </h1>
-            <div className="h-[10%] text-sm text-slate-500 text-center pt-1 pb-0 mb-0 ">
+            <div className="h-[10%] text-sm text-slate-800 text-center pt-1 pb-0 mb-0 ">
               {isTyping ? `User ${currentTypingUser} is typing...` : null}
             </div>
 

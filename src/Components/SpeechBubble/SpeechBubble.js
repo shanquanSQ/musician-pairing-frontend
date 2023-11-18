@@ -13,7 +13,6 @@ export const SpeechBubble = ({
   userinfo,
   attachmentinfo,
 }) => {
-  const [attachmentModalToggle, setAttachmentModalToggle] = useState(false);
   const [videoModalToggle, setVideoModalToggle] = useState(false);
   const [profileInfoToggle, setProfileInfoToggle] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
@@ -92,10 +91,10 @@ export const SpeechBubble = ({
                     </div>
 
                     <button
-                      className="absolute bottom-0 right-[10%] w-[1.5em] h-[1.5em] lg:w-[2em] lg:h-[2em] rounded-[50%] border border-white bg-slate-400 z-[30] scale-100 transition-all hover:scale-110 hover:cursor-pointer active:scale-95 focus:outline-none"
+                      className="absolute bottom-0 right-[10%] w-[1.5em] h-[1.5em] lg:w-[2em] lg:h-[2em] rounded-[50%] border bg-slate-300 border-white  z-[30] scale-100 transition-all hover:scale-110 hover:cursor-pointer active:scale-95 focus:outline-none"
                       onClick={handleVideoToggle}
                     >
-                      <ArrowsPointingOutIcon className="text-white scale-75" />
+                      <ArrowsPointingOutIcon className="text-slate-600 scale-75" />
                     </button>
                   </div>
                 </>

@@ -37,38 +37,6 @@ export const AttachmentModal = ({
     socket.emit("user-typing", userId);
   };
 
-  // const submitData = () => {
-  //   // Create a reference to the full path of the file. This path will be used to upload to Firebase Storage
-  //   if (
-  //     uploadedFile.fileInputFile === undefined ||
-  //     uploadedFile.fileInputFile === null
-  //   ) {
-  //     alert("You need to upload a picture!");
-  //   } else {
-  //     const storageRef = sRef(
-  //       storage,
-  //       STORAGE_KEY + uploadedFile.fileInputFile.name
-  //     );
-
-  //     // console.log(uploadedFile.fileInputFile.name);
-
-  //     uploadBytes(storageRef, uploadedFile.fileInputFile).then((snapshot) => {
-  //       console.log("uploaded a file!");
-  //       getDownloadURL(storageRef, uploadedFile.fileInputFile.name).then(
-  //         (fileUrl) => writeData(fileUrl)
-  //       );
-  //     });
-  //   }
-
-  //   // removeModal();
-  // };
-
-  // // functions to push to Database
-  // const writeData = async (photoURL) => {
-  //   console.log("writeData function: ", photoURL);
-  //   setFileUploadURL(photoURL);
-  // };
-
   const handleSubmitMessage = (ev) => {
     ev.preventDefault();
     postNewMessage(); // All Consecutive Functions have to go in here (AXIOS GET -> AXIOS GET -> AXIOS POST)
@@ -117,12 +85,7 @@ export const AttachmentModal = ({
           getDownloadURL(storageRef, uploadedFile.fileInputFile.name)
             .then((fileUrl) => (uploadURL = fileUrl))
             .then(async () => {
-              // POST the attachment - message relationship
-
-              // console.log("the data: ", newMessage.data.data);
-              // console.log("the file: ", uploadedFile.fileInputFile);
-              // console.log("the filetype: ", uploadedFile.fileInputFile.type);
-              // console.log("type is: ", typeof uploadedFile.fileInputFile.type);
+              // POST the attachment-message relationship
 
               let newAttachment = await axios.post(
                 `${process.env.REACT_APP_BACKEND_URL}/users/postMessageAttachment`,
@@ -135,11 +98,7 @@ export const AttachmentModal = ({
               );
 
               await refreshAttachments();
-
-              console.log(
-                "Posted attachment to database, the response: ",
-                newAttachment
-              );
+              socket.emit("attachment-table-updated", chatroomId);
             })
             .then(removeModal());
         });
@@ -159,15 +118,26 @@ export const AttachmentModal = ({
         </p>
 
         <div className="flex flex-col justify-center w-[100%] h-[100%] bg-slate-300 rounded-[3%] overflow-hidden">
-          {uploadedFile.fileInputFile === null ||
-          document.getElementById("fileinputform").getAttribute("value") ? (
-            <h1 className="text-center">Upload An Image or Video</h1>
-          ) : (
+          {uploadedFile.fileInputFile !== null &&
+          ACCEPTED_IMAGE_FORMATS.includes(uploadedFile.fileInputFile.type) ? (
             <img
               src={URL.createObjectURL(uploadedFile.fileInputFile)}
               alt={URL.createObjectURL(uploadedFile.fileInputFile).toString()}
               className="w-[100%] h-[100%] object-cover"
             />
+          ) : null}
+
+          {uploadedFile.fileInputFile !== null &&
+          ACCEPTED_VIDEO_FORMATS.includes(uploadedFile.fileInputFile.type) ? (
+            <video controls className="h-full object-contain">
+              <source
+                src={URL.createObjectURL(uploadedFile.fileInputFile)}
+                type="video/mp4"
+                className="object-cover"
+              />
+            </video>
+          ) : (
+            <h1 className="text-center">Upload An Image or Video</h1>
           )}
         </div>
 
