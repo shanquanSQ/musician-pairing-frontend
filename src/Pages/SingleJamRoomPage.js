@@ -4,19 +4,20 @@ import axios from "axios";
 
 // Import Components
 import { SpeechBubble } from "../Components/SpeechBubble/SpeechBubble";
+import { AttachmentModal } from "../Components/AttachmentModal/AttachmentModal";
 
 // Import Sockets
 import { io } from "socket.io-client"; // io is a function to call an individual socket. the package for frontend(client side) is npm i socket.io-client
-import { AttachmentModal } from "../Components/AttachmentModal/AttachmentModal";
 const socket = io(`http://localhost:8080`);
 
 export const SingleJamRoomPage = () => {
+  const [socketRoomId, setSocketRoomId] = useState(null);
   const [roomData, setRoomData] = useState("");
   const [roomDetails, setRoomDetails] = useState("");
   const [roomUsers, setRoomUsers] = useState("");
-  // const [organisedUsers, setOrganisedUsers] = useState({});
+  const [roomAttachments, setRoomAttachments] = useState("");
 
-  const [userMessage, setUserMessage] = useState({});
+  const [userMessage, setUserMessage] = useState("");
   const [currentTypingUser, setCurrentTypingUser] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
@@ -27,8 +28,6 @@ export const SingleJamRoomPage = () => {
   const { chatroomId } = useParams();
   const userId = 1; // Need to tie in with Auth
 
-  // let ORGANISED_USERS;
-
   // The URL of the backend goes into the socket
   //// const socket = io(`${process.env.REACT_APP_BACKEND_URL}`); // Doesnt work, Express server is on 8000. So we'll use 8080 for sockets.
   socket.on("connect", () => {
@@ -38,14 +37,13 @@ export const SingleJamRoomPage = () => {
 
   // Make a separate axios.get to get information about specific jamroom.
   useEffect(() => {
+    console.log("join room ", chatroomId);
+    socket.emit("join-room", chatroomId);
     getChatroomDetails();
     getChatroomInfo();
     getChatroomUsers();
+    getChatroomAttachments();
   }, []);
-
-  // useEffect(() => {
-  //   sortUserDetails();
-  // }, [roomUsers]);
 
   // Interval for checking user-typing emit from server
   useEffect(() => {
@@ -53,7 +51,7 @@ export const SingleJamRoomPage = () => {
     let myInterval = setInterval(() => {
       console.log("interval 3s passed");
       setIsTyping(false);
-    }, 3000);
+    }, 4000);
     console.log(`interval ${myInterval} started`);
 
     return () => {
@@ -68,19 +66,18 @@ export const SingleJamRoomPage = () => {
       setRoomData((prevState) => {
         return [...prevState, receiveddata];
       });
+      console.log("received message");
     });
 
     socket.on("user-typing-response", (typinguser) => {
       console.log(`User of Id ${typinguser} is typing`);
+      // console.log("user typing, socket id is: ", socket.id);
       setIsTyping(true); // Displays typing message
       setCurrentTypingUser(typinguser);
+    });
 
-      // myRef.current.lastChild.scrollIntoView({ behavior: "smooth" });
-
-      //// This will create multiple typing users. i.e. [user, user , user ,user] rather than [user]
-      // setCurrentTypingUser((prevState) => {
-      //   return [...prevState, typinguser];
-      // }); ..
+    socket.on("refresh-attachments", () => {
+      getChatroomAttachments();
     });
   }, [socket]);
 
@@ -109,7 +106,6 @@ export const SingleJamRoomPage = () => {
 
     if (chatroomDetails.data.success === true) {
       setRoomDetails(chatroomDetails.data.data);
-      // console.log("room details are set as: ", chatroomDetails);
     } else {
       alert("Unable to get Chatroom Details");
     }
@@ -122,9 +118,21 @@ export const SingleJamRoomPage = () => {
 
     if (allUsers.data.success === true) {
       setRoomUsers(allUsers.data.data);
-      // console.log("room details are set as: ", allUsers);
     } else {
       alert("Unable to get Chatroom Details");
+    }
+  };
+
+  const getChatroomAttachments = async () => {
+    let allAttachments = await axios.get(
+      `${process.env.REACT_APP_BACKEND_URL}/chatrooms/${chatroomId}/getAllChatroomAttachments`
+    );
+
+    if (allAttachments.data.success === true) {
+      console.log("SUCCESSFUL TRUE");
+      setRoomAttachments(allAttachments.data.data);
+    } else {
+      alert("Unable to get Chatroom Attachements");
     }
   };
 
@@ -152,6 +160,7 @@ export const SingleJamRoomPage = () => {
     }
   };
 
+  // Handle Text Input
   const handleTextChange = (ev) => {
     let name = ev.target.name;
     let value = ev.target.value;
@@ -160,25 +169,20 @@ export const SingleJamRoomPage = () => {
       return { ...prevState, [name]: value };
     });
 
-    socket.emit("user-typing", userId);
+    socket.emit("user-typing", userId, chatroomId);
   };
 
-  //// This doesnt work. Can't store state in the form: [ {1: {stuff:"blabla"}}, {2:{stuff}}]
-  // const sortUserDetails = () => {
-  //   console.log("sort details function", roomUsers);
-  //   let organisedArray = roomUsers.map((element) => {
-  //     let keyname = element.id;
-  //     return {
-  //       [keyname]: element,
-  //     };
-  //   });
-
-  //   ORGANISED_USERS = organisedArray;
-  // };
-
+  // Filter Individual Message Details into each Speech Bubble.
+  // (As opposed to each Speech Bubble making 1 BE call each, we re-use the information we called earlier)
   const checkUser = (messageDetails) => {
     let list = [...roomUsers];
     let results = list.filter((item) => item.id == messageDetails.authorId);
+    return results;
+  };
+
+  const checkMessageId = (messageDetails) => {
+    let list = [...roomAttachments];
+    let results = list.filter((item) => item.messageId == messageDetails.id);
     return results;
   };
 
@@ -198,23 +202,19 @@ export const SingleJamRoomPage = () => {
             <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-center balance">
               {roomDetails && roomDetails.name}
             </h1>
-            <div className="h-[10%] text-sm text-slate-500 text-center pt-1 pb-0 mb-0 ">
+            <div className="h-[10%] text-sm text-slate-800 text-center pt-1 pb-0 mb-0 ">
               {isTyping ? `User ${currentTypingUser} is typing...` : null}
             </div>
-            {/* <button
+
+            <button
               onClick={() => {
-                // sortUserDetails();
-                console.log(roomUsers);
-                // console.log(`chat id is ${chatroomId}. `);
-                // console.log(
-                //   `chat data is id is ${JSON.stringify(roomData[1])}. `
-                // );
+                console.log(roomAttachments);
               }}
               className="bg-red-500 px-2 py-1"
             >
               View room data state
             </button>
-            <br /> */}
+            <br />
 
             {/* Sorting message left and right by user logged in */}
             <div
@@ -234,6 +234,7 @@ export const SingleJamRoomPage = () => {
                             messagedata={elementdata}
                             index={index}
                             userinfo={checkUser(elementdata)[0]}
+                            attachmentinfo={checkMessageId(elementdata)[0]}
                           />
                         </div>
                       </>
@@ -249,6 +250,7 @@ export const SingleJamRoomPage = () => {
                             messagedata={elementdata}
                             index={index}
                             userinfo={checkUser(elementdata)[0]}
+                            attachmentinfo={checkMessageId(elementdata)[0]}
                           />
                         </div>
                       </>
@@ -256,7 +258,7 @@ export const SingleJamRoomPage = () => {
                 })}
             </div>
 
-            <div className="flex flex-col justify-end h-[20%] gap-[1em] mt-[1em] pr-[1.5em] text-right">
+            <div className="flex flex-col justify-end h-[20%] gap-[1em] mt-[1em] lg:mt-[.5em] pr-[1.5em] text-right">
               <div>
                 <textarea
                   type="text"
@@ -271,14 +273,14 @@ export const SingleJamRoomPage = () => {
               <div>
                 <button
                   onClick={handleAttachmentModal}
-                  className="bg-slate-700 px-[1em] text-white font-semibold rounded-md active:outline-none scale-100 transition-all active:scale-95 mr-[1em]"
+                  className="bg-slate-700 px-[1em] py-[.2em] text-white font-semibold rounded-md active:outline-none scale-100 transition-all active:scale-95 mr-[1em]"
                 >
                   UPLOAD
                 </button>
 
                 <button
                   onClick={handleSubmitMessage}
-                  className="bg-fill-secondary px-[1em] text-white font-semibold rounded-md active:outline-none scale-100 transition-all active:scale-95"
+                  className="bg-fill-secondary px-[1em] py-[.2em] text-white font-semibold rounded-md active:outline-none scale-100 transition-all active:scale-95"
                 >
                   SEND
                 </button>
@@ -288,7 +290,15 @@ export const SingleJamRoomPage = () => {
         </div>
 
         {/* MODALS GO HERE */}
-        {attachmentModalToggle && <AttachmentModal removeModal={removeModal} />}
+        {attachmentModalToggle && (
+          <AttachmentModal
+            removeModal={removeModal}
+            userId={userId}
+            setRoomData={setRoomData}
+            chatroomId={chatroomId}
+            refreshAttachments={getChatroomAttachments}
+          />
+        )}
         {attachmentModalToggle && (
           <div
             onClick={removeModal}

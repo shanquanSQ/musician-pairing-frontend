@@ -1,114 +1,223 @@
 import React, { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
+import axios from "axios";
 
 // Import Firebase Db and Methods
 import { storage } from "../../firebase/firebase.js"; // Reference to Firebase Storage Db
 import { ref as sRef, uploadBytes, getDownloadURL } from "firebase/storage"; // Get Firebase Storage Methods
 
-export const AttachmentModal = ({ userinfo, removeModal }) => {
+// Import Sockets
+import { io } from "socket.io-client"; // io is a function to call an individual socket. the package for frontend(client side) is npm i socket.io-client
+const socket = io(`http://localhost:8080`);
+
+export const AttachmentModal = ({
+  userId,
+  removeModal,
+  chatroomId,
+  refreshAttachments,
+}) => {
   const [uploadedFile, setUploadFile] = useState({
     fileInputFile: null,
   });
 
-  const STORAGE_KEY = "userattachments/"; // This corresponds to the Firebase branch/document
+  const [userMessage, setUserMessage] = useState("");
 
-  const submitData = () => {
-    // Create a reference to the full path of the file. This path will be used to upload to Firebase Storage
-    if (
-      uploadedFile.fileInputFile === undefined ||
-      uploadedFile.fileInputFile === null
-    ) {
-      alert("You need to upload a picture!");
-    } else {
-      const storageRef = sRef(
-        storage,
-        STORAGE_KEY + uploadedFile.fileInputFile.name
-      );
+  const STORAGE_KEY = `userattachments/user${userId}/chatroom${chatroomId}/`; // This corresponds to the Firebase branch/document
+  const ACCEPTED_IMAGE_FORMATS = ["image/jpeg", "image/png", "image/gif"];
+  const ACCEPTED_VIDEO_FORMATS = ["video/mp4"];
 
-      // console.log(uploadedFile.fileInputFile.name);
+  const handleTextChange = (ev) => {
+    let name = ev.target.name;
+    let value = ev.target.value;
 
-      uploadBytes(storageRef, uploadedFile.fileInputFile).then((snapshot) => {
-        console.log("uploaded a file!");
-        getDownloadURL(storageRef, uploadedFile.fileInputFile.name).then(
-          (fileUrl) => writeData(fileUrl)
-        );
-      });
-    }
+    setUserMessage((prevState) => {
+      return { ...prevState, [name]: value };
+    });
+
+    socket.emit("user-typing", userId);
   };
 
-  // functions to push to Database
-  const writeData = (photoURL) => {
-    // ev.preventDefault();
-    console.log("writeData function: ", photoURL);
+  const handleSubmitMessage = (ev) => {
+    ev.preventDefault();
+    postNewMessage(); // All Consecutive Functions have to go in here (AXIOS GET -> AXIOS GET -> AXIOS POST)
 
-    // if (state.messageText !== "") {
-    //   const messageListRef = ref(realTimeDatabase, DB_MESSAGES_KEY);
-    //   const newMessageRef = push(messageListRef);
-    //   // Sets a key - assigned by Firebase - for a NEW branch in Firebase
+    console.log("DONE!");
+  };
 
-    //   // Need to seperate per user, give it an ID and create a new item in the list
-    //   set(newMessageRef, {
-    //     text: state.messageText,
-    //     timestamp: new Date().toTimeString(),
-    //     fileURL: photoURL,
+  const postNewMessage = async () => {
+    let uploadURL;
+    let newMessage;
 
-    //     likes: 0,
-    //     // comments: [],
+    /**
+     * POST Message -> Get Message Primary Key -> POST Image
+     * */
 
-    //     userUID: userLoggedIn,
-    //     userEmail: userLoggedInEmail,
-    //   });
+    if (userMessage) {
+      // POST message to Database
+      newMessage = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/users/postNewMessage`,
+        {
+          userId: userId,
+          chatroomId: chatroomId,
+          content: userMessage.message,
+        }
+      );
 
-    //   navigate("/");
-    // } else {
-    //   alert("You need to enter a caption as well!");
-    // }
+      // Q: NOT SURE WHY WE DON'T NEED TO SET STATE HERE. It duplicates for some reason.
+      // setRoomData((prevState) => {
+      //   return [...prevState, newMessage.data.data];
+      // });
+
+      // Upload Photo Image to Firebase, get the URL
+      if (
+        uploadedFile.fileInputFile === undefined ||
+        uploadedFile.fileInputFile === null
+      ) {
+        alert("You need to upload a picture!");
+      } else {
+        const storageRef = sRef(
+          storage,
+          STORAGE_KEY + uploadedFile.fileInputFile.name
+        );
+        // console.log(uploadedFile.fileInputFile.name);
+        uploadBytes(storageRef, uploadedFile.fileInputFile).then((snapshot) => {
+          console.log("uploaded a file!");
+          getDownloadURL(storageRef, uploadedFile.fileInputFile.name)
+            .then((fileUrl) => (uploadURL = fileUrl))
+            .then(async () => {
+              // POST the attachment-message relationship
+
+              let newAttachment = await axios.post(
+                `${process.env.REACT_APP_BACKEND_URL}/users/postMessageAttachment`,
+                {
+                  mediaURL: uploadURL,
+                  messageId: newMessage.data.data.id,
+                  chatroomId: chatroomId,
+                  fileType: uploadedFile.fileInputFile.type,
+                }
+              );
+
+              await refreshAttachments();
+              socket.emit("attachment-table-updated", chatroomId);
+            })
+            .then(removeModal());
+        });
+      }
+
+      socket.emit("send-message", newMessage.data.data, chatroomId);
+    } else {
+      alert("Please key in a message");
+    }
   };
 
   return (
     <>
-      <div className=" absolute flex flex-col top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[90%] lg:w-[30%] h-[80%] bg-white rounded-md border py-[2em] px-[1em] shadow-sm z-[90] gap-[1em]">
+      <div className=" absolute flex flex-col top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[90%] md:w-[50%] lg:w-[50%] h-[80%] bg-white rounded-md border py-[2em] px-[1em] shadow-sm z-[90] gap-[1em]">
         <p className="text-txtcolor-primary font-bold text-center pb-[1em] text-xl border-b-[1px] border-slate-200">
           ATTACH
         </p>
 
         <div className="flex flex-col justify-center w-[100%] h-[100%] bg-slate-300 rounded-[3%] overflow-hidden">
-          {uploadedFile.fileInputFile === null ||
-          uploadedFile.fileInputFile === undefined ? (
-            <h1 className="text-center">Upload An Image or Video</h1>
-          ) : (
+          {uploadedFile.fileInputFile !== null &&
+          ACCEPTED_IMAGE_FORMATS.includes(uploadedFile.fileInputFile.type) ? (
             <img
               src={URL.createObjectURL(uploadedFile.fileInputFile)}
               alt={URL.createObjectURL(uploadedFile.fileInputFile).toString()}
               className="w-[100%] h-[100%] object-cover"
             />
+          ) : null}
+
+          {uploadedFile.fileInputFile !== null &&
+          ACCEPTED_VIDEO_FORMATS.includes(uploadedFile.fileInputFile.type) ? (
+            <video controls className="h-full object-contain">
+              <source
+                src={URL.createObjectURL(uploadedFile.fileInputFile)}
+                type="video/mp4"
+                className="object-cover"
+              />
+            </video>
+          ) : (
+            <h1 className="text-center">Upload An Image or Video</h1>
           )}
         </div>
 
-        <form className="text-center">
+        <form id="docpicker" className="text-center">
           {/* some kind of pre-processing is already done, so fileInputValue doesnt need to be */}
           <input
+            id="fileinputform"
             type="file"
             name="fileUpload"
-            value={uploadedFile.fileInputValue}
+            value={
+              uploadedFile.fileInputValue != null
+                ? ""
+                : uploadedFile.fileInputvalue
+            }
             onChange={(ev) => {
-              // console.log(ev.target.files);
-              setUploadFile({
-                fileInputFile: ev.target.files[0],
-                fileInputValue: ev.target.fileUpload,
-              });
+              if (
+                ev.target.files[0] &&
+                (ACCEPTED_IMAGE_FORMATS.includes(ev.target.files[0].type) ||
+                  ACCEPTED_VIDEO_FORMATS.includes(ev.target.files[0].type))
+              ) {
+                setUploadFile({
+                  fileInputFile: ev.target.files[0],
+                  fileInputValue: ev.target.fileUpload,
+                });
+              } else {
+                alert("Only accepts JPEG/PNG/GIF and MP4!");
+                setUploadFile({
+                  fileInputFile: null,
+                });
+              }
             }}
-            className="file-input file-input-bordered file w-full max-w-xs "
+            className="text-txtcolor-primary w-full max-w-xs"
           />
         </form>
 
+        {uploadedFile.fileInputFile !== null ? (
+          <>
+            <div className="flex flex-col justify-end h-[20%] gap-[1em] mt-[1em] lg:mt-[.5em] pr-[1.5em] text-right">
+              <div>
+                <textarea
+                  type="text"
+                  name="message"
+                  onChange={handleTextChange}
+                  value={userMessage.message}
+                  autoComplete="off"
+                  placeholder="message"
+                  className="bg-white w-[100%] h-[100%] p-[1em] rounded-md border-slate-400 border-[1px] focus:outline-none"
+                />
+              </div>
+              <div>
+                <button
+                  onClick={handleSubmitMessage}
+                  className="bg-fill-secondary px-[1em] py-[.2em] text-white font-semibold rounded-md active:outline-none scale-100 transition-all active:scale-95"
+                >
+                  SEND
+                </button>
+              </div>
+            </div>
+          </>
+        ) : null}
+
         <button
           onClick={() => {
-            console.log(uploadedFile.fileInputFile.type);
+            let item = document.getElementById("docpicker");
+
+            console.log(item);
+            console.log(uploadedFile);
           }}
         >
           check
         </button>
+
+        {/* <div>
+          <input
+            type="button"
+            value="UPLOAD"
+            onClick={submitData}
+            className="secondary-cta-btn w-[100%] lg:w-[100%]"
+          />
+        </div> */}
 
         <div
           className="fixed top-[1em] right-[1em] hover:cursor-pointer"
