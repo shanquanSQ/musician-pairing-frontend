@@ -12,15 +12,18 @@ export const SpeechBubble = ({
   index,
   userinfo,
   attachmentinfo,
+  currentUserId,
 }) => {
   const [videoModalToggle, setVideoModalToggle] = useState(false);
   const [profileInfoToggle, setProfileInfoToggle] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
+  // Used to troubleshoot inputs into each mapped element
   const handleClick = () => {
-    console.log(messagedata);
-    console.log("attachment info is: ", attachmentinfo);
-    // console.log("user info is: ", userinfo);
+    // console.log(messagedata);
+    // console.log(currentUserId);
+    // console.log("attachment info is: ", attachmentinfo);
+    console.log("user info is: ", userinfo);
   };
 
   const handleClickProfilePicture = () => {
@@ -51,17 +54,21 @@ export const SpeechBubble = ({
 
   return (
     <>
-      <div
-        className="h-[3rem] w-[3rem] mr-[1em] lg:w-[4rem] lg:h-[4rem] rounded-[50%] overflow-hidden border border-slate-200 scale-100 transition-all active:scale-95 hover:cursor-pointer"
-        onClick={handleClickProfilePicture}
-      >
-        <img
-          src={userinfo && userinfo.profilePictureUrl}
-          alt="face"
-          className="h-[100%] w-[100%] object-cover"
-        />
-      </div>
+      {/* Profile Picture Bubble on Left - Current User */}
+      {userinfo && currentUserId === userinfo.id ? (
+        <div
+          className="h-[3rem] w-[3rem] mr-[1em] lg:w-[4rem] lg:h-[4rem] rounded-[50%] overflow-hidden border border-slate-200 scale-100 transition-all active:scale-95 hover:cursor-pointer"
+          onClick={handleClickProfilePicture}
+        >
+          <img
+            src={userinfo && userinfo.profilePictureUrl}
+            alt="face"
+            className="h-[100%] w-[100%] object-cover"
+          />
+        </div>
+      ) : null}
 
+      {/* Speech Bubble */}
       <div
         className="w-[70%] md:w-[60%] lg:w-[60%] bg-white rounded-md border py-[1em] px-[1em] shadow-sm hover:cursor-pointer"
         onClick={handleClick}
@@ -130,6 +137,20 @@ export const SpeechBubble = ({
           </p>
         </div>
       </div>
+
+      {/* Profile Picture Bubble on Right - Other Users */}
+      {userinfo && currentUserId !== userinfo.id ? (
+        <div
+          className="h-[3rem] w-[3rem] ml-[1em] lg:w-[4rem] lg:h-[4rem] rounded-[50%] overflow-hidden border border-slate-200 scale-100 transition-all active:scale-95 hover:cursor-pointer"
+          onClick={handleClickProfilePicture}
+        >
+          <img
+            src={userinfo && userinfo.profilePictureUrl}
+            alt="face"
+            className="h-[100%] w-[100%] object-cover"
+          />
+        </div>
+      ) : null}
 
       {/* MODALS GO HERE */}
       {profileInfoToggle && (

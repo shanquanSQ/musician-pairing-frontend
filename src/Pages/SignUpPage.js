@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // Import Icons
 import { BackwardIcon } from "@heroicons/react/24/solid";
 
 export const SignUpPage = ({ motion }) => {
-  const [user, setUser] = useState({ user: "", password: "" });
+  const [user, setUser] = useState({ username: "", password: "" });
   const navigate = useNavigate();
 
   const handleChange = (ev) => {
@@ -18,12 +19,34 @@ export const SignUpPage = ({ motion }) => {
   };
 
   const handleClick = () => {
-    console.log(user);
-    navigate("/additionaldetails");
+    if (user.username !== "" && user.password !== "") {
+      signUpNewUser();
+    } else {
+      alert("Please key in details");
+    }
   };
 
   const handleSubmit = (ev) => {
     ev.preventDefault();
+  };
+
+  const signUpNewUser = async () => {
+    let checkUser = await axios.post(
+      `${process.env.REACT_APP_BACKEND_URL}/users/jwtSignUp`,
+      { fullName: user.username, password: user.password }
+    );
+
+    console.log("returned user token: ", checkUser);
+
+    if (checkUser.data.success === true) {
+      console.log("Bearer " + checkUser.data.data);
+      localStorage.setItem("token", "Bearer " + checkUser.data.data);
+
+      alert("New User Created!");
+      navigate("/profilepictureupload");
+    } else {
+      alert("Sign Up unsuccessful. " + checkUser.data.msg);
+    }
   };
 
   return (

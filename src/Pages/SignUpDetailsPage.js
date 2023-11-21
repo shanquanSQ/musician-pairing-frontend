@@ -56,10 +56,12 @@ export const SignUpDetailsPage = ({ motion }) => {
                 }}
               />
             </div>
-
-            <h1 className="font-bold text-txtcolor-primary text-[2rem] pt-[20%] pb-[2em]">
+            <h1 className="font-bold text-txtcolor-primary text-[2rem] pt-[20%] pb-[.5em]">
               LET THE COMMUNITY KNOW YOU!
             </h1>
+            <p className=" text-slate-500 pb-[3em]">
+              {`( ...Or fill in your bio later! )`}
+            </p>
 
             <div className="flex flex-col lg:gap-0 gap-[1em]">
               <input

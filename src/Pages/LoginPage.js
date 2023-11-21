@@ -1,12 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // Import Icons
 import { BackwardIcon } from "@heroicons/react/24/solid";
 
 export const LoginPage = ({ motion }) => {
-  const [user, setUser] = useState({ user: "", password: "" });
+  const [user, setUser] = useState({ username: "", password: "" });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const navigate = useNavigate();
+
+  // Check JWT Authentication on load
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     const checkAuthToken = async () => {
+  //       try {
+  //         const tokenAuth = "Bearer " + localStorage.getItem("token");
+
+  //         const data = await axios.get("/", {
+  //           headers: { Authorization: tokenAuth },
+  //         });
+
+  //         if (data.data.success) {
+  //           setIsAuthenticated(true);
+  //           navigate("/search");
+  //         }
+  //       } catch (err) {
+  //         localStorage.removeItem("token");
+  //       }
+  //     };
+  //     checkAuthToken();
+  //   }
+  // }, []);
 
   const handleChange = (ev) => {
     let name = ev.target.name;
@@ -17,13 +44,39 @@ export const LoginPage = ({ motion }) => {
     });
   };
 
-  const handleClick = () => {
-    console.log(user);
-    navigate("/search");
+  const handleSignIn = () => {
+    console.log("sign in activate, checking for user: ", user);
+
+    if (!user.username || !user.password) {
+      alert("Please fill in both Username and Password!");
+    }
+    // Database Call to verify user
+    else {
+      console.log("entering");
+      checkVerifiedUserSignIn();
+    }
   };
 
   const handleSubmit = (ev) => {
     ev.preventDefault();
+    console.log("hello");
+  };
+
+  const checkVerifiedUserSignIn = async () => {
+    let checkUser = await axios.post(
+      `${process.env.REACT_APP_BACKEND_URL}/users/jwtLogIn`,
+      { fullName: user.username, password: user.password }
+    );
+    console.log("checkuser in database: ", checkUser.data);
+
+    if (checkUser.data.success === true) {
+      setIsAuthenticated(true);
+      console.log("Bearer " + checkUser.data.data);
+      localStorage.setItem("token", "Bearer " + checkUser.data.data);
+      navigate("/search");
+    } else {
+      alert("Sign in unsuccessful. " + checkUser.data.msg);
+    }
   };
 
   return (
@@ -57,25 +110,33 @@ export const LoginPage = ({ motion }) => {
             </h1>
 
             <div className="flex flex-col lg:gap-0 gap-[1em]">
-              <input
-                type="text"
-                name="username"
-                onChange={handleChange}
-                value={user.username}
-                autoComplete="off"
-                placeholder="USERNAME"
-                className="primary-input-form"
-              />
+              <form onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  name="username"
+                  onChange={handleChange}
+                  value={user.username}
+                  autoComplete="off"
+                  placeholder="USERNAME"
+                  className="primary-input-form mb-[.5em] lg:mb-[0em]"
+                />
 
-              <input
-                type="password"
-                name="password"
-                onChange={handleChange}
-                value={user.password}
-                autoComplete="off"
-                placeholder="PASSWORD"
-                className="primary-input-form"
-              />
+                <input
+                  type="password"
+                  name="password"
+                  onChange={handleChange}
+                  value={user.password}
+                  autoComplete="off"
+                  placeholder="PASSWORD"
+                  className="primary-input-form"
+                />
+
+                <button
+                  type="submit"
+                  onClick={handleSignIn}
+                  className="opacity-0"
+                />
+              </form>
             </div>
           </div>
 
@@ -87,7 +148,7 @@ export const LoginPage = ({ motion }) => {
               <input
                 type="button"
                 value="SIGN IN"
-                onClick={handleClick}
+                onClick={handleSignIn}
                 className="secondary-cta-btn w-[100%] lg:w-[100%]"
               />
             </form>

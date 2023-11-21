@@ -1,18 +1,28 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
 // Import Components
 import { SpeechBubble } from "../Components/SpeechBubble/SpeechBubble";
 import { AttachmentModal } from "../Components/AttachmentModal/AttachmentModal";
+import { UserPlusIcon } from "@heroicons/react/24/outline";
 
 // Import Sockets
 import { io } from "socket.io-client"; // io is a function to call an individual socket. the package for frontend(client side) is npm i socket.io-client
+import { InviteUserToJamRoomModal } from "../Components/InviteUserToJamRoomModal/InviteUserToJamRoomModal";
+
 const socket = io(`http://localhost:8080`);
 
+let authToken;
+
 export const SingleJamRoomPage = () => {
-  const [socketRoomId, setSocketRoomId] = useState(null);
+  const [tokenAuth, setTokenAuth] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState({});
+  const [userId, setUserId] = useState(null);
+
   const [roomData, setRoomData] = useState("");
+  const [roomMessageFlag, setRoomMessageFlag] = useState(false);
   const [roomDetails, setRoomDetails] = useState("");
   const [roomUsers, setRoomUsers] = useState("");
   const [roomAttachments, setRoomAttachments] = useState("");
@@ -22,11 +32,10 @@ export const SingleJamRoomPage = () => {
   const [isTyping, setIsTyping] = useState(false);
 
   const [attachmentModalToggle, setAttachmentModalToggle] = useState(false);
+  const [addUserModalToggle, setAddUserModalToggle] = useState(false);
 
-  const myRef = useRef(null);
-
-  const { chatroomId } = useParams();
-  const userId = 1; // Need to tie in with Auth
+  let { chatroomId } = useParams();
+  // const userId; // Need to tie in with Auth
 
   // The URL of the backend goes into the socket
   //// const socket = io(`${process.env.REACT_APP_BACKEND_URL}`); // Doesnt work, Express server is on 8000. So we'll use 8080 for sockets.
@@ -37,25 +46,54 @@ export const SingleJamRoomPage = () => {
 
   // Make a separate axios.get to get information about specific jamroom.
   useEffect(() => {
+    let TOKEN = localStorage.getItem("token");
+    setTokenAuth(TOKEN);
+    authToken = TOKEN;
+  }, []);
+
+  useEffect(() => {
+    if (tokenAuth) {
+      console.log("getting current user");
+      const getCurrentUser = async () => {
+        let currentUserInfo = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/users/getCurrentUser`,
+          {
+            headers: { Authorization: tokenAuth },
+          }
+        );
+        setCurrentUser(currentUserInfo.data.user);
+        setUserId(currentUserInfo.data.user.id);
+
+        console.log("currentUserInfo is ", currentUserInfo.data.user);
+        console.log("END STEP 1");
+
+        setIsAuthenticated(true);
+      };
+      getCurrentUser();
+    }
+
+    // console.log("exit ");
+  }, [tokenAuth]);
+
+  useEffect(() => {
     console.log("join room ", chatroomId);
     socket.emit("join-room", chatroomId);
-    getChatroomDetails();
-    getChatroomInfo();
-    getChatroomUsers();
-    getChatroomAttachments();
-  }, []);
+    if (tokenAuth && isAuthenticated) {
+      console.log("STEP 2");
+      getChatroomDetails();
+      getChatroomInfo();
+      getChatroomUsers();
+      getChatroomAttachments();
+    }
+  }, [isAuthenticated, tokenAuth]);
 
   // Interval for checking user-typing emit from server
   useEffect(() => {
-    // checkTyping();
     let myInterval = setInterval(() => {
-      console.log("interval 3s passed");
       setIsTyping(false);
     }, 4000);
-    console.log(`interval ${myInterval} started`);
 
     return () => {
-      console.log("clearing interval");
       clearInterval(myInterval);
     };
   }, []);
@@ -71,12 +109,12 @@ export const SingleJamRoomPage = () => {
 
     socket.on("user-typing-response", (typinguser) => {
       console.log(`User of Id ${typinguser} is typing`);
-      // console.log("user typing, socket id is: ", socket.id);
       setIsTyping(true); // Displays typing message
       setCurrentTypingUser(typinguser);
     });
 
     socket.on("refresh-attachments", () => {
+      getChatroomInfo();
       getChatroomAttachments();
     });
   }, [socket]);
@@ -88,20 +126,32 @@ export const SingleJamRoomPage = () => {
 
   /** BACKEND REQUESTS */
   const getChatroomInfo = async () => {
-    let chatroomInfo = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/chatrooms/${chatroomId}/getAllChatroomMessages`
-    );
+    console.log("tokenAuth outside: ", tokenAuth);
+    if (tokenAuth) {
+      console.log("token auth inside: ", tokenAuth);
+      let updatedToken = localStorage.getItem("token");
+      let chatroomInfo = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/chatrooms/${chatroomId}/getAllChatroomMessages`,
+        {
+          headers: { Authorization: updatedToken },
+        }
+      );
 
-    if (chatroomInfo.data.success === true) {
-      setRoomData(chatroomInfo.data.data);
-    } else {
-      alert("Unable to get specific chatroom data.");
+      if (chatroomInfo.data.success === true) {
+        setRoomData(chatroomInfo.data.data);
+        setRoomMessageFlag(true);
+      } else {
+        alert("Unable to get specific chatroom data.");
+      }
     }
   };
 
   const getChatroomDetails = async () => {
     let chatroomDetails = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/chatrooms/${chatroomId}/getChatroomDetails`
+      `${process.env.REACT_APP_BACKEND_URL}/chatrooms/${chatroomId}/getChatroomDetails`,
+      {
+        headers: { Authorization: tokenAuth },
+      }
     );
 
     if (chatroomDetails.data.success === true) {
@@ -113,7 +163,10 @@ export const SingleJamRoomPage = () => {
 
   const getChatroomUsers = async () => {
     let allUsers = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/chatrooms/${chatroomId}/getAllChatroomUsers`
+      `${process.env.REACT_APP_BACKEND_URL}/chatrooms/${chatroomId}/getAllChatroomUsers`,
+      {
+        headers: { Authorization: tokenAuth },
+      }
     );
 
     if (allUsers.data.success === true) {
@@ -124,15 +177,27 @@ export const SingleJamRoomPage = () => {
   };
 
   const getChatroomAttachments = async () => {
-    let allAttachments = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/chatrooms/${chatroomId}/getAllChatroomAttachments`
-    );
-
-    if (allAttachments.data.success === true) {
-      console.log("SUCCESSFUL TRUE");
-      setRoomAttachments(allAttachments.data.data);
+    console.log("running get chatroom attachments");
+    console.log("auth token in attachments: ", authToken);
+    if (authToken) {
+      let allAttachments = await axios
+        .get(
+          `${process.env.REACT_APP_BACKEND_URL}/chatrooms/${chatroomId}/getAllChatroomAttachments`,
+          {
+            headers: { Authorization: authToken },
+          }
+        )
+        .then((allAttachments) => {
+          if (allAttachments.data.success === true) {
+            console.log("SUCCESSFUL TRUE");
+            setRoomAttachments(allAttachments.data.data);
+            console.log("done room attachments");
+          } else {
+            console.log("Unable to get Chatroom Attachements");
+          }
+        });
     } else {
-      alert("Unable to get Chatroom Attachements");
+      console.log("STOPPED");
     }
   };
 
@@ -144,7 +209,8 @@ export const SingleJamRoomPage = () => {
           userId: userId,
           chatroomId: chatroomId,
           content: userMessage.message,
-        }
+        },
+        { headers: { Authorization: tokenAuth } }
       );
 
       // console.log("Sent your message!");
@@ -194,21 +260,35 @@ export const SingleJamRoomPage = () => {
     setAttachmentModalToggle(false);
   };
 
+  const handleAddUserToRoomModal = () => {
+    setAddUserModalToggle(!addUserModalToggle);
+  };
+
+  const removeAddUserModal = () => {
+    setAddUserModalToggle(false);
+  };
+
   return (
     <>
       <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em] ">
-        <div className="flex flex-col w-full lg:w-[30%] justify-between overflow-x-hidden overflow-y-auto">
+        <div className="flex flex-col w-full gap-0 lg:w-[30%] justify-between overflow-x-hidden overflow-y-auto">
           <div className="flex flex-col pt-[0em] mb-[0em] h-[100%]">
             <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-center balance">
               {roomDetails && roomDetails.name}
             </h1>
-            <div className="h-[10%] text-sm text-slate-800 text-center pt-1 pb-0 mb-0 ">
-              {isTyping ? `User ${currentTypingUser} is typing...` : null}
+
+            <div className="flex flex-row justify-center h-[10%] text-sm text-slate-800 text-center pt-1 pb-0 mb-0  ">
+              <div className="flex flex-row justify-center w-[50%]">
+                <UserPlusIcon
+                  className="h-8 w-8 text-gray-500"
+                  onClick={handleAddUserToRoomModal}
+                />
+              </div>
             </div>
 
             <button
               onClick={() => {
-                console.log(roomAttachments);
+                console.log(roomUsers);
               }}
               className="bg-red-500 px-2 py-1"
             >
@@ -217,10 +297,7 @@ export const SingleJamRoomPage = () => {
             <br />
 
             {/* Sorting message left and right by user logged in */}
-            <div
-              ref={myRef}
-              className="pr-[1.5em] h-[100%] mb-[1em] py-[1em] border-b-[1px] border-t-[1px] border-slate-300 overflow-y-auto"
-            >
+            <div className="pr-[1.5em] h-[100%] mb-[1em] py-[1em] border-b-[1px] border-t-[1px] border-slate-300 overflow-y-auto">
               {roomData &&
                 roomData.map((elementdata, index) => {
                   if (elementdata.authorId === userId) {
@@ -235,6 +312,7 @@ export const SingleJamRoomPage = () => {
                             index={index}
                             userinfo={checkUser(elementdata)[0]}
                             attachmentinfo={checkMessageId(elementdata)[0]}
+                            currentUserId={userId}
                           />
                         </div>
                       </>
@@ -251,11 +329,16 @@ export const SingleJamRoomPage = () => {
                             index={index}
                             userinfo={checkUser(elementdata)[0]}
                             attachmentinfo={checkMessageId(elementdata)[0]}
+                            currentUserId={userId}
                           />
                         </div>
                       </>
                     );
                 })}
+            </div>
+
+            <div className="flex flex-col justify-end w-[100%] min-h-[1rem] text-center leading-0">
+              {isTyping ? `User ${currentTypingUser} is typing...` : null}
             </div>
 
             <div className="flex flex-col justify-end h-[20%] gap-[1em] mt-[1em] lg:mt-[.5em] pr-[1.5em] text-right">
@@ -290,7 +373,7 @@ export const SingleJamRoomPage = () => {
         </div>
 
         {/* MODALS GO HERE */}
-        {attachmentModalToggle && (
+        {attachmentModalToggle && chatroomId && (
           <AttachmentModal
             removeModal={removeModal}
             userId={userId}
@@ -302,6 +385,19 @@ export const SingleJamRoomPage = () => {
         {attachmentModalToggle && (
           <div
             onClick={removeModal}
+            className="fixed top-0 left-0 w-[100vw] h-full bg-black z-[9] transition-all opacity-50"
+          ></div>
+        )}
+
+        {addUserModalToggle && (
+          <InviteUserToJamRoomModal
+            removeModal={removeAddUserModal}
+            chatroomId={chatroomId}
+          />
+        )}
+        {addUserModalToggle && (
+          <div
+            onClick={removeAddUserModal}
             className="fixed top-0 left-0 w-[100vw] h-full bg-black z-[9] transition-all opacity-50"
           ></div>
         )}
