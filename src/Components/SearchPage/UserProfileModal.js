@@ -11,11 +11,13 @@ import { BACKEND_URL } from "../../constants.js";
 export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
     const [pageOwnerInfo, setPageOwnerInfo] = useState(null)
     const [isOwnPage, setIsOwnPage] = useState(false); 
-    //pageOwnerUserId = 4;
+    const [textField, setTextField] = useState({ roomname: "" });
 
     useEffect(()=>{
         const getUserInfo = async () => {
-          const pageOwnerInfo = await axios.get(`${BACKEND_URL}/users/${pageOwnerUserId}`)
+          const pageOwnerInfo = await axios.get(`${BACKEND_URL}/users/${pageOwnerUserId}`,{
+            headers: { Authorization: localStorage.getItem("token") },
+        })
           setPageOwnerInfo(pageOwnerInfo.data.user)
         }
        getUserInfo()
@@ -23,6 +25,32 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
 
       const numberOfSessions = "65";
       const uniqueCollaborators = "30";
+
+      const handleCreateRoomForTwo = async () => {
+        const createdRoom = await axios.post(
+          `${BACKEND_URL}/users/createNewChatroomForTwo`,
+          {
+            //userId:'the currently logged in user',
+            secondUserId: pageOwnerUserId,
+            name: textField.roomname,
+            genresPlayed: '',
+            instrumentsWanted: '',
+          },
+          {
+            headers: { Authorization: localStorage.getItem("token") },
+          }
+        );
+        removeModal()
+      };
+
+      const handleTextChange = (ev) => {
+        let name = ev.target.name;
+        let value = ev.target.value;
+    
+        setTextField((prevState) => {
+          return { ...prevState, [name]: value };
+        });
+      };
 
   return (
     <>
@@ -77,11 +105,18 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
               <input
                 type="button"
                 value="Create Room"
-                onClick={() => {
-                  console.log("to navigate to user's profile");
-                }}
+                onClick={handleCreateRoomForTwo}
                 className="secondary-cta-btn w-[100%] lg:w-[100%]"
               />
+               <input
+              type="text"
+              name="roomname"
+              onChange={handleTextChange}
+              value={textField.roomname}
+              autoComplete="off"
+              placeholder="JAM ROOM NAME?"
+              className="primary-input-form text-center"
+            />
             </div>
           </div>
         </div>

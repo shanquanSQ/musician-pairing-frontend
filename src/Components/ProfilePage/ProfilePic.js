@@ -23,7 +23,10 @@ export function ProfilePic({ isOwnPage, displayedUserId, storedURL }) {
       .then((url) => {
         axios.put(`${BACKEND_URL}/users/${displayedUserId}`, {
           profilePictureUrl: url,
-        });
+        },
+        {
+          headers: { Authorization: localStorage.getItem("token") },
+      });
       });
   };
 

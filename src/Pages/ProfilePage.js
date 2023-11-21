@@ -66,16 +66,16 @@ export const ProfilePage = ({ motion, pageOwnerUserId, loggedInUserId }) => {
               {/* <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-left ">
                 PROFILE
               </h1> */}
-              {pageOwnerInfo ? (
+              {pageOwnerInfo && userId ? (
                 <div>
                   <ProfilePic
                     isOwnPage={isOwnPage}
-                    displayedUserId={pageOwnerUserId}
+                    displayedUserId={userId}
                     storedURL={pageOwnerInfo.profilePictureUrl}
                   />
                   <Username
                     isOwnPage={isOwnPage}
-                    displayedUserId={pageOwnerUserId}
+                    displayedUserId={userId}
                     storedUsername={pageOwnerInfo.fullName}
                   />
                 </div>
