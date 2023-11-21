@@ -15,6 +15,9 @@ export function Bio({ isOwnPage, displayedUserId, storedBio }) {
     setIsBeingEdited(false);
         axios.put(`${BACKEND_URL}/users/${displayedUserId}`, {
           bio
+        },
+        {
+            headers: { Authorization: localStorage.getItem("token") },
         });
   };
 

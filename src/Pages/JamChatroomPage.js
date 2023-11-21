@@ -130,6 +130,7 @@ export const JamChatroomPage = ({ motion }) => {
 
   return (
     <>
+    {/* {console.log(userRoomData)} */}
       <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em] ">
         <div className="flex flex-col w-full lg:w-[30%] justify-between overflow-x-hidden overflow-y-auto">
           <div className="flex flex-col pt-[2em] mb-[-10em]">
@@ -147,7 +148,7 @@ export const JamChatroomPage = ({ motion }) => {
                 />
               </div>
             </div>
-            {/* 
+{/*             
             <button
               onClick={() => {
                 console.log(userRoomData);
