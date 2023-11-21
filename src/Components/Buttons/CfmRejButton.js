@@ -1,3 +1,6 @@
+// -- DEPRECATED -- //
+
+
 import { CheckCircleIcon, XCircleIcon, PencilSquareIcon } from "@heroicons/react/20/solid";
 
 export function CfmRejButton({field, type, clickFunc, setEditedFields}) {

@@ -5,15 +5,12 @@ import { ref as sRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
   CheckCircleIcon,
   XCircleIcon,
-  PencilSquareIcon,
-  TrashIcon,
-  PlusCircleIcon,
 } from "@heroicons/react/20/solid";
 import { BACKEND_URL } from "../../constants.js";
 
 export function ProfilePic({ isOwnPage, displayedUserId, storedURL }) {
   const [profilePicture, setProfilePicture] = useState(null);
-  const [profilePictureURL, setProfilePictureURL] = useState(storedURL);
+  const [profilePictureURL, setProfilePictureURL] = useState(storedURL ? storedURL : null);
   const [isBeingEdited, setIsBeingEdited] = useState(false);
 
   const writeData = async () => {
@@ -43,11 +40,7 @@ export function ProfilePic({ isOwnPage, displayedUserId, storedURL }) {
           className={`${isOwnPage && "cursor-pointer"}`}
         >
           <img
-            src={
-              profilePictureURL
-                ? profilePictureURL
-                : "https://firebasestorage.googleapis.com/v0/b/dev-portfolio-sq.appspot.com/o/random%2Fnapoleon-dynamite36641.jpeg?alt=media&token=436c7b15-7324-4311-9fb1-ccab8e0b7d56"
-            }
+            src={profilePictureURL}
             alt="Profile photo"
             className="h-full object-cover"
           />

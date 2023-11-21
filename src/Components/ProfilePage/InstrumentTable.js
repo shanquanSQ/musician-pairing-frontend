@@ -2,52 +2,63 @@ import React, { useEffect, useState } from "react";
 import { CheckCircleIcon, XCircleIcon, PencilSquareIcon, TrashIcon, PlusCircleIcon } from "@heroicons/react/20/solid";
 import axios from "axios";
 import {BACKEND_URL} from '../../constants.js';
+import Select from 'react-select'
 
 export function InstrumentTable({isOwnPage, displayedUserId}) {
-    const [instrumentsList, setInstrumentsList] = useState([])
+    const [userInstrumentsList, setUserInstrumentsList] = useState([])
+    const [fullInstrumentsList, setFullInstrumentsList] = useState([])
     const [isBeingEdited, setIsBeingEdited] = useState(false)
     const [newInstrument, setNewInstrument] = useState ({
-        name: "",
+        instrument: {value: "", label: ""},
         instrumentExperience: ""
     })
 
     useEffect(() => {
-        const getInstrumentInfo = async () => {
-            const instrumentInfo = await axios.get(`${BACKEND_URL}/users/${displayedUserId}/instruments`)
-            setInstrumentsList(instrumentInfo.data.playedInstruments);
+        const getUserInstrumentsInfo = async () => {
+            const userInstrumentsInfo = await axios.get(`${BACKEND_URL}/users/${displayedUserId}/instruments`)
+            setUserInstrumentsList(userInstrumentsInfo.data.playedInstruments);
         }
-        getInstrumentInfo();
+        const getFullInstrumentsList = async () => { 
+            const fullInstrumentsInfo = await axios.get(`${BACKEND_URL}/instruments/selectable`)
+            setFullInstrumentsList(fullInstrumentsInfo.data);
+        }
+        getUserInstrumentsInfo();
+        getFullInstrumentsList();
     }, [])
 
-    const writeData = () => {
+    const writeData = async () => {
         setIsBeingEdited(false);
-        alert('insert code to write current state to database')
+        await axios.put(`${BACKEND_URL}/users/${displayedUserId}/instruments`, {userInstrumentsList})
     }
 
   const revertData = async () => {
     const instrumentInfo = await axios.get(`${BACKEND_URL}/users/${displayedUserId}/instruments`)
     setIsBeingEdited(false);
-    setInstrumentsList(instrumentInfo.data.playedInstruments);
+    setUserInstrumentsList(instrumentInfo.data.playedInstruments);
   }
 
   const addRow = () => {
-    setInstrumentsList((prevState)=>{
-        prevState.push(Object.values(newInstrument))
-        console.log(prevState)
-        prevState.sort((a,b)=>b[1]-a[1])
-        console.log(prevState)
-        return [...prevState]
-        //may need to do some sorting
-    })
-    setNewInstrument({
-        name: "",
-        instrumentExperience: ""
-    })
+    const instrumentNames = new Set(userInstrumentsList.map((entry)=>entry.instrument.label))
+    if (instrumentNames.has(newInstrument.instrument.label)) {
+        alert('Instrument is already listed, please delete previous entry and try again')
+    } else {
+        setUserInstrumentsList((prevState)=>{
+            prevState.push(newInstrument)
+            console.log(prevState)
+            prevState.sort((a,b)=>b.instrumentExperience-a.instrumentExperience)
+            console.log(prevState)
+            return [...prevState]
+        })
+        setNewInstrument({
+            instrument: {value: "", label: ""},
+            instrumentExperience: ""
+        })
+    } 
   }
 
   const removeRow = (index) => {
     console.log(index)
-    setInstrumentsList((prevState)=>{
+    setUserInstrumentsList((prevState)=>{
         prevState.splice(index,1)
         console.log(prevState)
         return [...prevState]
@@ -62,13 +73,19 @@ export function InstrumentTable({isOwnPage, displayedUserId}) {
     });
   }
 
-    const instrumentRows = instrumentsList.map((instrument, index) => {
+  const handleSelectChange = (e) => {
+    setNewInstrument((prevState) => {
+      return { ...prevState, instrument: e };
+    });
+  };
+
+    const instrumentRows = userInstrumentsList.map((entry, index) => {
         return (
-          <tr key={index} id={instrument}>
+          <tr key={index} id={entry.instrument.label}>
             <td className="inline pr-[.5em]">
-              {instrument[0].toUpperCase()}
+              {entry.instrument.label.toUpperCase()}
             </td>
-            <td>{instrument[1]}</td>
+            <td>{entry.instrumentExperience}</td>
             <td>{isBeingEdited ? 
                 <div>
                 <label for={`deleteRow-instruments-${index}`} >
@@ -84,17 +101,14 @@ export function InstrumentTable({isOwnPage, displayedUserId}) {
       const newEntryRow =
         <tr key='newEntry' id='newEntry'>
             <td className="inline pr-[.5em] text-lg">
-            <input
-                placeholder="Instrument"
-                type="text"
-                name="instrument"
-                id="name"
-                size="10"
-                value={newInstrument.name}
-                onChange={(e) => {
-                    inputChange(e);
-                }}
-            />
+
+                  <Select // we need to figure out how to style this...
+                  defaultValue = {{value:"Instrument", label:"Instrument" }}
+                  size="10"
+                      options={fullInstrumentsList}
+                      value={newInstrument.instrument}
+                      onChange={(e) => handleSelectChange(e)}
+                  />
             </td>
             <td className = 'text-lg'>
             <input
@@ -120,7 +134,6 @@ export function InstrumentTable({isOwnPage, displayedUserId}) {
       
     return (
         <div>
-        {console.log(instrumentsList)}
             <div className='flex flex-row'>
                 <h1 className="font-bold text-txtcolor-primary text-[1.2rem] text-left mx-2">
                     INSTRUMENTS/EXPERIENCE
