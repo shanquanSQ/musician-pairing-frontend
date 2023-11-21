@@ -1,46 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {CfmRejButton} from "../Components/Buttons/CfmRejButton"
-import {EditButton} from "../Components/Buttons/EditButton"
-import {DeleteButton} from "../Components/Buttons/DeleteButton"
+// import {CfmRejButton} from "../Components/Buttons/CfmRejButton"
+// import {EditButton} from "../Components/Buttons/EditButton"
+// import {DeleteButton} from "../Components/Buttons/DeleteButton"
 import {ProfilePic} from "../Components/ProfilePage/ProfilePic"
 import {InstrumentTable} from "../Components/ProfilePage/InstrumentTable"
+import {Username} from "../Components/ProfilePage/Username"
+import {Bio} from "../Components/ProfilePage/Bio"
+import {ArtistList} from "../Components/ProfilePage/ArtistList"
+import {GenreList} from "../Components/ProfilePage/GenreList"
+import axios from "axios";
+import { BACKEND_URL } from "../constants.js";
 
-export const ProfilePage = ({ motion }) => {
+export const ProfilePage = ({ motion, pageOwnerUserId, loggedInUserId }) => { // these are being set upon entry
   const navigate = useNavigate();
-  const [userName, setUserName] = useState('Dummy User here')
-  const [editedFields, setEditedFields] = useState(new Set())
   const [isOwnPage, setIsOwnPage] = useState(true); //this will later setup depending on whether username on page matches login user
+  const [pageOwnerInfo, setPageOwnerInfo] = useState(null)
+  pageOwnerUserId = 4; //remove this once we can pass in the userId
 
   useEffect(()=>{
-    const getAllUserInfo = async () => {
-      const [user, instruments, genres, artists, personalclips] = await Promise.all([
-
-      ])
+    const getUserInfo = async () => {
+      const pageOwnerInfo = await axios.get(`${BACKEND_URL}/users/4`)// this should be pageOwnerUserId
+      setPageOwnerInfo(pageOwnerInfo.data.user)
     }
-    
-    //might need to do a if user exists
-    /* 
-    pull for current user:
-    -All data from users table
-    -All data from instruments, users_instruments, genres, artists, songs, personal_video_clips table
-
-    */
-
+   getUserInfo()
   },[])
-  // Lists will probably come from server as a prop.
-  // Not sure if server request will be done here or in parent component.
-  
-  const genreList = ["Rock", "Pop", "Hip Hop", "Electronic", "Jazz", "Country"];
-
-  const artistsList = [
-    "John Mayer",
-    "Katy Perry",
-    "Taylor Swift",
-    "Joe Hisaishi",
-    "Elvis Presley",
-    "Spongebob OST",
-  ];
 
   const numberOfSessions = "65";
   const uniqueCollaborators = "30";
@@ -54,28 +38,16 @@ export const ProfilePage = ({ motion }) => {
               {/* <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-left ">
                 PROFILE
               </h1> */}
-
-              <ProfilePic isOwnPage={isOwnPage} displayedUserId='4' storedURL = "https://firebasestorage.googleapis.com/v0/b/dev-portfolio-sq.appspot.com/o/random%2Fnapoleon-dynamite36641.jpeg?alt=media&token=436c7b15-7324-4311-9fb1-ccab8e0b7d56" />
-
-              <h1 className="font-bold text-slate-800 text-[2rem] flex flex-row  ">
-              {editedFields.has('username') ? 
-              <div>
-              <input
-                type="text"
-                id="editUsername"
-                placeholder="Name"
-                value = {userName}
-                onChange = {(e)=>setUserName(e.target.value)}
-              />
-              <CfmRejButton field = 'username' type='confirm' setEditedFields = {setEditedFields} clickFunc={() => { alert('insert code for submitting to BE') }} />
-              <CfmRejButton field = 'username' type='reject' setEditedFields = {setEditedFields} clickFunc={() => { alert('insert code for resetting to original input') }} />
+              {pageOwnerInfo ?
+                <div>
+                  <ProfilePic isOwnPage={isOwnPage} displayedUserId={pageOwnerUserId} storedURL={pageOwnerInfo.profilePictureUrl} />
+                  <Username isOwnPage={isOwnPage} displayedUserId={pageOwnerUserId} storedUsername = {pageOwnerInfo.fullName} />
               </div>
-              :userName}
-                <EditButton field = "username" editedFields = {editedFields} setEditedFields = {setEditedFields} isOwnPage={isOwnPage} />
-              </h1>
+              :null}
             </div>
 
-            <InstrumentTable isOwnPage = {isOwnPage} displayedUserId = '4'/>
+            <InstrumentTable isOwnPage = {isOwnPage} displayedUserId = {pageOwnerUserId}/>
+            
 
             <div className="flex flex-row flex-wrap gap-[3em]">
               <div>
@@ -97,39 +69,16 @@ export const ProfilePage = ({ motion }) => {
               </div>
             </div>
 
-            <div>
-              <h1 className="font-bold text-txtcolor-primary text-[1.2rem] text-left ">
-                FAVOURITE GENRES
-              </h1>
-              <div className="text-[1.5rem] font-semibold leading-[1.2em] pr-[1em]">
-                {genreList.map((element, index) => {
-                  return (
-                    <div key={index} id={element} className="inline pr-[.5em]">
-                      {element.toUpperCase()} /
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            {pageOwnerInfo ? 
+            <Bio isOwnPage={isOwnPage} displayedUserId={pageOwnerUserId} storedBio = {pageOwnerInfo.bio} />
+            :null}
 
-            <div>
-              <h1 className="font-bold text-txtcolor-primary text-[1.2rem] text-left ">
-                FAVOURITE ARTISTS
-              </h1>
-              <div className="text-[1.5rem] font-semibold leading-[1.2em] pr-[1em]">
-                {artistsList.map((element, index) => {
-                  return (
-                    <div key={index} id={element} className="inline pr-[.5em]">
-                      {element.toUpperCase()} /
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <GenreList isOwnPage={isOwnPage} displayedUserId={pageOwnerUserId} />
+            <ArtistList isOwnPage={isOwnPage} displayedUserId={pageOwnerUserId} />
 
             {/* LOGOUT BUTTON */}
             <div className="pt-[1.5em]">
-              <form>
+              {/* <form>
                 <input
                   type="button"
                   value="EDIT INFO"
@@ -138,7 +87,7 @@ export const ProfilePage = ({ motion }) => {
                   }}
                   className="secondary-cta-btn w-[100%] lg:w-[100%]"
                 />
-              </form>
+              </form> */}
 
               <form>
                 <input

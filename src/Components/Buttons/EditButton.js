@@ -1,3 +1,5 @@
+// -- DEPRECATED -- //
+
 import { PencilSquareIcon } from "@heroicons/react/20/solid";
 
 export function EditButton({field, editedFields, setEditedFields, isOwnPage}) {

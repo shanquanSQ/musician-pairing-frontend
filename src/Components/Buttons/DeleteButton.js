@@ -1,3 +1,5 @@
+// -- DEPRECATED -- //
+
 import { TrashIcon } from "@heroicons/react/20/solid";
 
 export function DeleteButton({field, editedFields}) {
