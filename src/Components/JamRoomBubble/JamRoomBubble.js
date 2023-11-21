@@ -26,7 +26,7 @@ export const JamRoomBubble = ({ roomdata }) => {
           </p>
           <p className="font-medium text-black text-[1rem]">Looking For:</p>
           <p>
-            {roomdata && roomdata.instrumentsWanted
+            {roomdata.instrumentsWanted && roomdata.instrumentsWanted == null
               ? roomdata.instrumentsWanted
               : "Not looking for any particular instruments"}
           </p>

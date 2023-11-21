@@ -21,6 +21,7 @@ export const NavBar = () => {
       location.pathname === "/" ||
       location.pathname === "/login" ||
       location.pathname === "/signup" ||
+      location.pathname === "/profilepictureupload" ||
       location.pathname === "/additionaldetails"
     ) {
       setNavToggle(false);

@@ -15,7 +15,7 @@ export const ProfileIconModal = ({ userinfo, removeModal }) => {
           </div>
         </div>
 
-        <div className="text-txtcolor-primary font-bold text-center">
+        <div className="text-txtcolor-primary text-[2rem] font-bold text-center">
           {userinfo.fullName}
         </div>
 
@@ -30,18 +30,18 @@ export const ProfileIconModal = ({ userinfo, removeModal }) => {
               <p className="text-black font-semibold text-sm">Experience:</p>
               {userinfo.experience}
             </div>
-
-            <div>
-              <input
-                type="button"
-                value="VISIT PROFILE"
-                onClick={() => {
-                  console.log("to navigate to user's profile");
-                }}
-                className="secondary-cta-btn w-[100%] lg:w-[100%]"
-              />
-            </div>
           </div>
+        </div>
+
+        <div>
+          <input
+            type="button"
+            value="INVITE USER"
+            onClick={() => {
+              console.log("Add User to the Jam Room!");
+            }}
+            className="secondary-cta-btn w-[100%] lg:w-[100%] "
+          />
         </div>
 
         <div

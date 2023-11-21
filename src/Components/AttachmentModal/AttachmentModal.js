@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
 
@@ -16,6 +17,7 @@ export const AttachmentModal = ({
   chatroomId,
   refreshAttachments,
 }) => {
+  const [tokenAuth, setTokenAuth] = useState(null);
   const [uploadedFile, setUploadFile] = useState({
     fileInputFile: null,
   });
@@ -25,6 +27,14 @@ export const AttachmentModal = ({
   const STORAGE_KEY = `userattachments/user${userId}/chatroom${chatroomId}/`; // This corresponds to the Firebase branch/document
   const ACCEPTED_IMAGE_FORMATS = ["image/jpeg", "image/png", "image/gif"];
   const ACCEPTED_VIDEO_FORMATS = ["video/mp4"];
+
+  // let chatroomId;
+  // let { chatroomId } = useParams();
+
+  useEffect(() => {
+    let TOKEN = localStorage.getItem("token");
+    setTokenAuth(TOKEN);
+  }, []);
 
   const handleTextChange = (ev) => {
     let name = ev.target.name;
@@ -57,10 +67,11 @@ export const AttachmentModal = ({
       newMessage = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/users/postNewMessage`,
         {
-          userId: userId,
+          // userId: userId,
           chatroomId: chatroomId,
           content: userMessage.message,
-        }
+        },
+        { headers: { Authorization: localStorage.getItem("token") } }
       );
 
       // Q: NOT SURE WHY WE DON'T NEED TO SET STATE HERE. It duplicates for some reason.
@@ -94,11 +105,14 @@ export const AttachmentModal = ({
                   messageId: newMessage.data.data.id,
                   chatroomId: chatroomId,
                   fileType: uploadedFile.fileInputFile.type,
-                }
+                },
+                { headers: { Authorization: tokenAuth } }
               );
-
               await refreshAttachments();
-              socket.emit("attachment-table-updated", chatroomId);
+              if (chatroomId) {
+                console.log("the chatroomID is : ", chatroomId);
+                socket.emit("attachment-table-updated", chatroomId);
+              }
             })
             .then(removeModal());
         });
@@ -199,7 +213,7 @@ export const AttachmentModal = ({
           </>
         ) : null}
 
-        <button
+        {/* <button
           onClick={() => {
             let item = document.getElementById("docpicker");
 
@@ -208,7 +222,7 @@ export const AttachmentModal = ({
           }}
         >
           check
-        </button>
+        </button> */}
 
         {/* <div>
           <input
