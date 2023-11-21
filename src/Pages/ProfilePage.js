@@ -3,28 +3,57 @@ import { useNavigate } from "react-router-dom";
 // import {CfmRejButton} from "../Components/Buttons/CfmRejButton"
 // import {EditButton} from "../Components/Buttons/EditButton"
 // import {DeleteButton} from "../Components/Buttons/DeleteButton"
-import {ProfilePic} from "../Components/ProfilePage/ProfilePic"
-import {InstrumentTable} from "../Components/ProfilePage/InstrumentTable"
-import {Username} from "../Components/ProfilePage/Username"
-import {Bio} from "../Components/ProfilePage/Bio"
-import {ArtistList} from "../Components/ProfilePage/ArtistList"
-import {GenreList} from "../Components/ProfilePage/GenreList"
+import { ProfilePic } from "../Components/ProfilePage/ProfilePic";
+import { InstrumentTable } from "../Components/ProfilePage/InstrumentTable";
+import { Username } from "../Components/ProfilePage/Username";
+import { Bio } from "../Components/ProfilePage/Bio";
+import { ArtistList } from "../Components/ProfilePage/ArtistList";
+import { GenreList } from "../Components/ProfilePage/GenreList";
 import axios from "axios";
 import { BACKEND_URL } from "../constants.js";
 
-export const ProfilePage = ({ motion, pageOwnerUserId, loggedInUserId }) => { // these are being set upon entry
+export const ProfilePage = ({ motion, pageOwnerUserId, loggedInUserId }) => {
+  // these are being set upon entry
+  const [tokenAuth, setTokenAuth] = useState(null);
+  const [currentUser, setCurrentUser] = useState({});
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userId, setUserId] = useState("");
+
   const navigate = useNavigate();
   const [isOwnPage, setIsOwnPage] = useState(true); //this will later setup depending on whether username on page matches login user
-  const [pageOwnerInfo, setPageOwnerInfo] = useState(null)
-  pageOwnerUserId = 4; //remove this once we can pass in the userId
+  const [pageOwnerInfo, setPageOwnerInfo] = useState(null);
 
-  useEffect(()=>{
-    const getUserInfo = async () => {
-      const pageOwnerInfo = await axios.get(`${BACKEND_URL}/users/4`)// this should be pageOwnerUserId
-      setPageOwnerInfo(pageOwnerInfo.data.user)
+  useEffect(() => {
+    let TOKEN = localStorage.getItem("token");
+    setTokenAuth(TOKEN);
+  }, []);
+
+  useEffect(() => {
+    if (tokenAuth) {
+      const getCurrentUser = async () => {
+        let currentUserInfo = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/users/getCurrentUser`,
+          {
+            headers: { Authorization: localStorage.getItem("token") },
+          }
+        );
+        setUserId(currentUserInfo.data.user.id);
+      };
+      getCurrentUser();
     }
-   getUserInfo()
-  },[])
+
+    // console.log("exit ");
+  }, [tokenAuth]);
+
+  useEffect(() => {
+    if (tokenAuth && isAuthenticated) {
+      const getUserInfo = async () => {
+        const pageOwnerInfo = await axios.get(`${BACKEND_URL}/users/${userId}`); // this should be pageOwnerUserId
+        setPageOwnerInfo(pageOwnerInfo.data.user);
+      };
+      getUserInfo();
+    }
+  }, [, tokenAuth, isAuthenticated]);
 
   const numberOfSessions = "65";
   const uniqueCollaborators = "30";
@@ -38,16 +67,26 @@ export const ProfilePage = ({ motion, pageOwnerUserId, loggedInUserId }) => { //
               {/* <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-left ">
                 PROFILE
               </h1> */}
-              {pageOwnerInfo ?
+              {pageOwnerInfo ? (
                 <div>
-                  <ProfilePic isOwnPage={isOwnPage} displayedUserId={pageOwnerUserId} storedURL={pageOwnerInfo.profilePictureUrl} />
-                  <Username isOwnPage={isOwnPage} displayedUserId={pageOwnerUserId} storedUsername = {pageOwnerInfo.fullName} />
-              </div>
-              :null}
+                  <ProfilePic
+                    isOwnPage={isOwnPage}
+                    displayedUserId={pageOwnerUserId}
+                    storedURL={pageOwnerInfo.profilePictureUrl}
+                  />
+                  <Username
+                    isOwnPage={isOwnPage}
+                    displayedUserId={pageOwnerUserId}
+                    storedUsername={pageOwnerInfo.fullName}
+                  />
+                </div>
+              ) : null}
             </div>
 
-            <InstrumentTable isOwnPage = {isOwnPage} displayedUserId = {pageOwnerUserId}/>
-            
+            <InstrumentTable
+              isOwnPage={isOwnPage}
+              displayedUserId={pageOwnerUserId}
+            />
 
             <div className="flex flex-row flex-wrap gap-[3em]">
               <div>
@@ -69,12 +108,22 @@ export const ProfilePage = ({ motion, pageOwnerUserId, loggedInUserId }) => { //
               </div>
             </div>
 
-            {pageOwnerInfo ? 
-            <Bio isOwnPage={isOwnPage} displayedUserId={pageOwnerUserId} storedBio = {pageOwnerInfo.bio} />
-            :null}
+            {pageOwnerInfo ? (
+              <Bio
+                isOwnPage={isOwnPage}
+                displayedUserId={pageOwnerUserId}
+                storedBio={pageOwnerInfo.bio}
+              />
+            ) : null}
 
-            <GenreList isOwnPage={isOwnPage} displayedUserId={pageOwnerUserId} />
-            <ArtistList isOwnPage={isOwnPage} displayedUserId={pageOwnerUserId} />
+            <GenreList
+              isOwnPage={isOwnPage}
+              displayedUserId={pageOwnerUserId}
+            />
+            <ArtistList
+              isOwnPage={isOwnPage}
+              displayedUserId={pageOwnerUserId}
+            />
 
             {/* LOGOUT BUTTON */}
             <div className="pt-[1.5em]">
