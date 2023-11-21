@@ -8,14 +8,14 @@ import {ArtistList} from "../../Components/ProfilePage/ArtistList"
 import {GenreList} from "../../Components/ProfilePage/GenreList"
 import { BACKEND_URL } from "../../constants.js";
 
-export const UserProfileModal = ({ userinfo, pageOwnerUserId, removeModal }) => {
+export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
     const [pageOwnerInfo, setPageOwnerInfo] = useState(null)
     const [isOwnPage, setIsOwnPage] = useState(false); 
-    pageOwnerUserId = 4;
+    //pageOwnerUserId = 4;
 
     useEffect(()=>{
         const getUserInfo = async () => {
-          const pageOwnerInfo = await axios.get(`${BACKEND_URL}/users/4`)// this should be pageOwnerUserId
+          const pageOwnerInfo = await axios.get(`${BACKEND_URL}/users/${pageOwnerUserId}`)
           setPageOwnerInfo(pageOwnerInfo.data.user)
         }
        getUserInfo()

@@ -11,6 +11,7 @@ export const SearchPage = ({ motion }) => {
   const [searchTermsList, setSearchTermsList] = useState([]);
   const [searchedUsers, setSearchedUsers] = useState(null)
   const [userProfileModalToggle, setUserProfileModalToggle] = useState(false);
+  const [modalProfileId, setModalProfileId] = useState(null)
 
   // Axios GET Placeholders
   const categoriesList = ["Instruments", "Genres", "Artists"];
@@ -78,7 +79,10 @@ export const SearchPage = ({ motion }) => {
             </p>
           </div>
           <div>
-            <button className='bg-yellow-300' onClick={handleUserProfileModal} id={`searchresult-${user.fullName}`}> Profile </button>
+            <button className='bg-yellow-300' onClick={()=>{
+              setModalProfileId(user.id)
+              console.log(modalProfileId)
+              handleUserProfileModal()}} id={`searchresult-${user.fullName}`}> Profile </button>
           </div>
         </div>
       )
@@ -163,7 +167,7 @@ export const SearchPage = ({ motion }) => {
             </div>
           </motion.div>
           {/* MODALS GO HERE */}
-        {userProfileModalToggle && <UserProfileModal removeModal={removeModal} />}
+        {userProfileModalToggle && <UserProfileModal removeModal={removeModal} pageOwnerUserId={modalProfileId}/>}
         {userProfileModalToggle && (
           <div
             onClick={removeModal}

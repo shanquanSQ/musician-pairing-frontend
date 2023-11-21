@@ -45,7 +45,6 @@ export function GenreList({isOwnPage, displayedUserId}) {
   }
 
     const genreText = genresList.map((genre, index) => {
-        console.log(genresList)
         return (
             <div className = "flex flex-row" key={index} id={genre}>
           {genre.toUpperCase() + " "}

@@ -45,7 +45,6 @@ export function ArtistList({isOwnPage, displayedUserId}) {
   }
 
     const artistText = artistsList.map((artist, index) => {
-        console.log(artistsList)
         return (
             <div className = "flex flex-row" key={index} id={artist}>
             {artist.toUpperCase() + " "}
