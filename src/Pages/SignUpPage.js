@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import {BACKEND_URL} from '../constants.js';
 
 // Import Icons
 import { BackwardIcon } from "@heroicons/react/24/solid";
@@ -32,7 +33,7 @@ export const SignUpPage = ({ motion }) => {
 
   const signUpNewUser = async () => {
     let checkUser = await axios.post(
-      `${process.env.REACT_APP_BACKEND_URL}/users/jwtSignUp`,
+      `${BACKEND_URL}/users/jwtSignUp`,
       { fullName: user.username, password: user.password }
     );
 

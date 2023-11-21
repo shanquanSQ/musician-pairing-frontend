@@ -5,6 +5,7 @@ import axios from "axios";
 // Import Firebase Db and Methods
 import { storage } from "../firebase/firebase.js"; // Reference to Firebase Storage Db
 import { ref as sRef, uploadBytes, getDownloadURL } from "firebase/storage"; // Get Firebase Storage Methods
+import { BACKEND_URL } from "../constants.js";
 
 export const SignUpPictureUpload = ({ motion }) => {
   const [tokenAuth, setTokenAuth] = useState(null);
@@ -58,7 +59,7 @@ export const SignUpPictureUpload = ({ motion }) => {
             .then(async () => {
               // POST - Add the profile picture to the corresponding user
               let newProfilePicture = await axios.post(
-                `${process.env.REACT_APP_BACKEND_URL}/users/addProfilePicture`,
+                `${BACKEND_URL}/users/addProfilePicture`,
                 {
                   photoURL: uploadURL,
                 },
