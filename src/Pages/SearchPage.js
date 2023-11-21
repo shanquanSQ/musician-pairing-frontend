@@ -1,31 +1,54 @@
 import React, { useEffect, useState } from "react";
 import { CategoryDropDown } from "../Components/CategoryDropDown/CategoryDropDown";
 import axios from "axios";
-import {BACKEND_URL} from '../constants.js';
-import {UserProfileModal} from '../Components/SearchPage/UserProfileModal'
+import { BACKEND_URL } from "../constants.js";
+import { UserProfileModal } from "../Components/SearchPage/UserProfileModal";
 
 export const SearchPage = ({ motion }) => {
   // const [user, setUser] = useState({ user: "", password: "" });
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSearchTerm, setSelectedSearchTerm] = useState("");
   const [searchTermsList, setSearchTermsList] = useState([]);
-  const [searchedUsers, setSearchedUsers] = useState(null)
+  const [searchedUsers, setSearchedUsers] = useState(null);
   const [userProfileModalToggle, setUserProfileModalToggle] = useState(false);
-  const [modalProfileId, setModalProfileId] = useState(null)
+  const [modalProfileId, setModalProfileId] = useState(null);
+
+  const [userId, setUserId] = useState("");
 
   // Axios GET Placeholders
   const categoriesList = ["Instruments", "Genres", "Artists"];
-  
+
+  useEffect(() => {
+    // console.log("getting current user");
+    const getCurrentUser = async () => {
+      let currentUserInfo = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/users/getCurrentUser`,
+        {
+          headers: { Authorization: localStorage.getItem("token") },
+        }
+      );
+      setUserId(currentUserInfo.data.user.id);
+    };
+    getCurrentUser();
+
+    // console.log("exit ");
+  }, []);
+
   const handleChangeCategory = async (ev) => {
     if (ev.target.id !== "") {
-      const response = await axios.get(`${BACKEND_URL}/${ev.target.id.toLowerCase()}`)
-      const searchTerms = response.data.map((entry)=> entry.name);
+      const response = await axios.get(
+        `${BACKEND_URL}/${ev.target.id.toLowerCase()}`,
+        {
+          headers: { Authorization: localStorage.getItem("token") },
+        }
+      );
+      const searchTerms = response.data.map((entry) => entry.name);
       setSearchTermsList(searchTerms);
     } else {
       setSearchTermsList([]);
     }
     setSelectedCategory(ev.target.id.toUpperCase());
-    
+
     // console.log(`selected category state in Search Page: ${selectedCategory}`);
   };
 
@@ -35,21 +58,25 @@ export const SearchPage = ({ motion }) => {
     //   `selected searchterm state in Search Page: ${selectedSearchTerm}`
     // );
   };
-  
-  
+
   const handleSubmit = async (ev) => {
     ev.preventDefault();
-    if (!selectedCategory || !selectedSearchTerm){
-      alert("Please select filter criteria")
+    if (!selectedCategory || !selectedSearchTerm) {
+      alert("Please select filter criteria");
     } else {
-      const response = await axios.get(`${BACKEND_URL}/users/filteredusers/${selectedCategory.toLowerCase()}/${selectedSearchTerm}`)
-      setSearchedUsers(response.data.filteredUsers)
+      const response = await axios.get(
+        `${BACKEND_URL}/users/filteredusers/${selectedCategory.toLowerCase()}/${selectedSearchTerm}`,
+        {
+          headers: { Authorization: localStorage.getItem("token") },
+        }
+      );
+      setSearchedUsers(response.data.filteredUsers);
     }
   };
 
   const handleClick = () => {
-    alert('insert modal code here')
-  }
+    alert("insert modal code here");
+  };
 
   const handleUserProfileModal = () => {
     //may need some code to pass in the user ID here
@@ -60,36 +87,51 @@ export const SearchPage = ({ motion }) => {
     setUserProfileModalToggle(false);
   };
 
-  const searchResults = (searchedUsers ? searchedUsers.map((user) => {
-    if (user.id === 4) // i need to pull from auth here
-      return;
-    else {
-      return (
-        <div className='flex flex-row h-[8em] bg-blue-300 text-black border-2 border-black rounded-md'>
-          {console.log(searchedUsers)}
-          <div className='p-2'>
-            <div className="w-[6em] h-[6em] aspect-square items-center rounded-full overflow-hidden bg-orange-300">
-              <img src={user.profilePictureUrl} className='object-cover h-full w-full' />
+  const searchResults = searchedUsers
+    ? searchedUsers.map((user) => {
+        if (user.id === userId)
+          // i need to pull from auth here
+          return;
+        else {
+          return (
+            <div className="flex flex-row h-[8em] bg-blue-300 text-black border-2 border-black rounded-md">
+              {console.log(searchedUsers)}
+              <div className="p-2">
+                <div className="w-[6em] h-[6em] aspect-square items-center rounded-full overflow-hidden bg-orange-300">
+                  <img
+                    src={user.profilePictureUrl}
+                    className="object-cover h-full w-full"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col bg-green-300">
+                <p>{user.fullName}</p>
+                <p>
+                  Instruments: {user.instruments[0].name} -{" "}
+                  {user.instruments[0].userInstrument.instrumentExperience}y If
+                  category was instrument, display that instrument and exp; else
+                  display nothing here
+                </p>
+              </div>
+              <div>
+                <button
+                  className="bg-yellow-300"
+                  onClick={() => {
+                    setModalProfileId(user.id);
+                    console.log(modalProfileId);
+                    handleUserProfileModal();
+                  }}
+                  id={`searchresult-${user.fullName}`}
+                >
+                  {" "}
+                  Profile{" "}
+                </button>
+              </div>
             </div>
-          </div>
-          <div className='flex flex-col bg-green-300'>
-            <p>{user.fullName}</p>
-            <p>Instruments: {user.instruments[0].name} - {user.instruments[0].userInstrument.instrumentExperience}y
-              If category was instrument, display that instrument and exp; else display nothing here
-            </p>
-          </div>
-          <div>
-            <button className='bg-yellow-300' onClick={()=>{
-              setModalProfileId(user.id)
-              console.log(modalProfileId)
-              handleUserProfileModal()}} id={`searchresult-${user.fullName}`}> Profile </button>
-          </div>
-        </div>
-      )
-    }
-  }) 
-  : null)
-
+          );
+        }
+      })
+    : null;
 
   return (
     <>
@@ -145,10 +187,9 @@ export const SearchPage = ({ motion }) => {
               />
             </div>
 
-            {searchedUsers ? 
-            <div className = 'bg-orange-300'>
-            {searchResults}
-            </div> : null}
+            {searchedUsers ? (
+              <div className="bg-orange-300">{searchResults}</div>
+            ) : null}
             {/* {searchedUsers ? searchedUsers[0].fullName: null}
             {searchedUsers.map((user)=>{
               return (
@@ -167,13 +208,18 @@ export const SearchPage = ({ motion }) => {
             </div>
           </motion.div>
           {/* MODALS GO HERE */}
-        {userProfileModalToggle && <UserProfileModal removeModal={removeModal} pageOwnerUserId={modalProfileId}/>}
-        {userProfileModalToggle && (
-          <div
-            onClick={removeModal}
-            className="fixed top-0 left-0 w-[100vw] h-full bg-black z-[9] transition-all opacity-50"
-          ></div>
-        )}
+          {userProfileModalToggle && (
+            <UserProfileModal
+              removeModal={removeModal}
+              pageOwnerUserId={modalProfileId}
+            />
+          )}
+          {userProfileModalToggle && (
+            <div
+              onClick={removeModal}
+              className="fixed top-0 left-0 w-[100vw] h-full bg-black z-[9] transition-all opacity-50"
+            ></div>
+          )}
         </div>
       </>
     </>

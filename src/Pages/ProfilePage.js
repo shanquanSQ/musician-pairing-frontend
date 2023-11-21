@@ -17,43 +17,42 @@ export const ProfilePage = ({ motion, pageOwnerUserId, loggedInUserId }) => {
   const [tokenAuth, setTokenAuth] = useState(null);
   const [currentUser, setCurrentUser] = useState({});
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState(null);
 
   const navigate = useNavigate();
   const [isOwnPage, setIsOwnPage] = useState(true); //this will later setup depending on whether username on page matches login user
   const [pageOwnerInfo, setPageOwnerInfo] = useState(null);
 
   useEffect(() => {
-    let TOKEN = localStorage.getItem("token");
-    setTokenAuth(TOKEN);
+    const getCurrentUser = async () => {
+      let currentUserInfo = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/users/getCurrentUser`,
+        {
+          headers: { Authorization: localStorage.getItem("token") },
+        }
+      );
+      setIsAuthenticated(true);
+      setUserId(currentUserInfo.data.user.id);
+    };
+    getCurrentUser();
+
+    // console.log("exit ");
   }, []);
 
   useEffect(() => {
-    if (tokenAuth) {
-      const getCurrentUser = async () => {
-        let currentUserInfo = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL}/users/getCurrentUser`,
+    if (isAuthenticated) {
+      const getUserInfo = async () => {
+        const pageOwnerInfo = await axios.get(
+          `${BACKEND_URL}/users/${userId}`,
           {
             headers: { Authorization: localStorage.getItem("token") },
           }
-        );
-        setUserId(currentUserInfo.data.user.id);
-      };
-      getCurrentUser();
-    }
-
-    // console.log("exit ");
-  }, [tokenAuth]);
-
-  useEffect(() => {
-    if (tokenAuth && isAuthenticated) {
-      const getUserInfo = async () => {
-        const pageOwnerInfo = await axios.get(`${BACKEND_URL}/users/${userId}`); // this should be pageOwnerUserId
+        ); // this should be pageOwnerUserId
         setPageOwnerInfo(pageOwnerInfo.data.user);
       };
       getUserInfo();
     }
-  }, [, tokenAuth, isAuthenticated]);
+  }, [isAuthenticated]);
 
   const numberOfSessions = "65";
   const uniqueCollaborators = "30";
@@ -83,10 +82,21 @@ export const ProfilePage = ({ motion, pageOwnerUserId, loggedInUserId }) => {
               ) : null}
             </div>
 
-            <InstrumentTable
-              isOwnPage={isOwnPage}
-              displayedUserId={pageOwnerUserId}
-            />
+            {userId && (
+              <InstrumentTable
+                isOwnPage={isOwnPage}
+                displayedUserId={userId}
+                token={tokenAuth}
+              />
+            )}
+
+            {/* <button
+              onClick={() => {
+                console.log(pageOwnerInfo);
+              }}
+            >
+              HELLO
+            </button> */}
 
             <div className="flex flex-row flex-wrap gap-[3em]">
               <div>
@@ -111,19 +121,25 @@ export const ProfilePage = ({ motion, pageOwnerUserId, loggedInUserId }) => {
             {pageOwnerInfo ? (
               <Bio
                 isOwnPage={isOwnPage}
-                displayedUserId={pageOwnerUserId}
+                displayedUserId={userId}
                 storedBio={pageOwnerInfo.bio}
               />
             ) : null}
 
-            <GenreList
-              isOwnPage={isOwnPage}
-              displayedUserId={pageOwnerUserId}
-            />
-            <ArtistList
-              isOwnPage={isOwnPage}
-              displayedUserId={pageOwnerUserId}
-            />
+            {userId && (
+              <GenreList
+                isOwnPage={isOwnPage}
+                displayedUserId={userId}
+                token={tokenAuth}
+              />
+            )}
+            {userId && (
+              <ArtistList
+                isOwnPage={isOwnPage}
+                displayedUserId={userId}
+                token={tokenAuth}
+              />
+            )}
 
             {/* LOGOUT BUTTON */}
             <div className="pt-[1.5em]">
