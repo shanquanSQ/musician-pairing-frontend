@@ -94,38 +94,36 @@ export const SearchPage = ({ motion }) => {
           return;
         else {
           return (
-            <div className="flex flex-row h-[8em] bg-blue-300 text-black border-2 border-black rounded-md">
+            <div
+              className="flex flex-row h-[10em] p-[1em] bg-white text-black border-[1px] border-slate-200 rounded-md shadow-md mt-[1em] overflow-hidden hover:cursor-pointer scale-100 transition-all active:scale-95"
+              onClick={() => {
+                setModalProfileId(user.id);
+                console.log(modalProfileId);
+                handleUserProfileModal();
+              }}
+              id={`searchresult-${user.fullName}`}
+            >
               {console.log(searchedUsers)}
-              <div className="p-2">
-                <div className="w-[6em] h-[6em] aspect-square items-center rounded-full overflow-hidden bg-orange-300">
+              <div className="flex flex-col justify-center pr-2">
+                <div className="w-[6em] h-[6em] aspect-square items-center rounded-full overflow-hidden bg-white">
                   <img
                     src={user.profilePictureUrl}
                     className="object-cover h-full w-full"
+                    alt="your next star player"
                   />
                 </div>
               </div>
-              <div className="flex flex-col bg-green-300">
-                <p>{user.fullName}</p>
-                <p>
+              <div className="flex flex-col pl-[1em] h-[100%]">
+                <p className="font-bold text-txtcolor-primary text-[1.5rem]">
+                  {user.fullName}
+                </p>
+                {/* Shouldn't need overflow for the description. Should read in a single line. I'm putting it now just to see the styling*/}
+                <p className="overflow-hidden">
                   Instruments: {user.instruments[0].name} -{" "}
-                  {user.instruments[0].userInstrument.instrumentExperience}y If
+                  {user.instruments[0].userInstrument.instrumentExperience}If
                   category was instrument, display that instrument and exp; else
                   display nothing here
                 </p>
-              </div>
-              <div>
-                <button
-                  className="bg-yellow-300"
-                  onClick={() => {
-                    setModalProfileId(user.id);
-                    console.log(modalProfileId);
-                    handleUserProfileModal();
-                  }}
-                  id={`searchresult-${user.fullName}`}
-                >
-                  {" "}
-                  Profile{" "}
-                </button>
               </div>
             </div>
           );
@@ -146,11 +144,12 @@ export const SearchPage = ({ motion }) => {
               duration: 0.5,
             }}
           >
-            <div className="flex flex-col pt-[2em] mb-[-10em]">
-              <h1 className="font-bold text-txtcolor-primary text-[1.2rem] lg:text-[1.5rem] text-left ">
-                CATEGORY /
-              </h1>
-              {/* <input
+            <div className="flex flex-col pt-[2em] mb-[-10em] gap-[2em]">
+              <div>
+                <h1 className="font-bold text-txtcolor-primary text-[1. 2rem] lg:text-[1.5rem] text-left ">
+                  CATEGORY /
+                </h1>
+                {/* <input
                 type="text"
                 name="username"
                 onChange={handleChange}
@@ -159,18 +158,18 @@ export const SearchPage = ({ motion }) => {
                 placeholder="USERNAME"
                 className="primary-input-form"
               /> */}
-              <CategoryDropDown
-                initialterm="Categories"
-                inputdata={categoriesList}
-                handleSelect={handleChangeCategory}
-              />
-            </div>
+                <CategoryDropDown
+                  initialterm="Categories"
+                  inputdata={categoriesList}
+                  handleSelect={handleChangeCategory}
+                />
+              </div>
 
-            <div className="flex flex-col">
-              <h1 className="font-bold text-txtcolor-primary text-[1.2rem] lg:text-[1.5rem] text-left">
-                SEARCH /
-              </h1>
-              {/* <input
+              <div>
+                <h1 className="font-bold text-txtcolor-primary text-[1.2rem] lg:text-[1.5rem] text-left">
+                  SEARCH /
+                </h1>
+                {/* <input
                 type="text"
                 name="password"
                 onChange={handleChange}
@@ -180,16 +179,15 @@ export const SearchPage = ({ motion }) => {
                 className="primary-input-form"
               /> */}
 
-              <CategoryDropDown
-                initialterm="Search"
-                inputdata={searchTermsList}
-                handleSelect={handleChangeSearchTerm}
-              />
+                <CategoryDropDown
+                  initialterm="Search"
+                  inputdata={searchTermsList}
+                  handleSelect={handleChangeSearchTerm}
+                />
+              </div>
             </div>
 
-            {searchedUsers ? (
-              <div className="bg-orange-300">{searchResults}</div>
-            ) : null}
+            {searchedUsers ? <div className="">{searchResults}</div> : null}
             {/* {searchedUsers ? searchedUsers[0].fullName: null}
             {searchedUsers.map((user)=>{
               return (

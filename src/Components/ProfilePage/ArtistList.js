@@ -72,7 +72,7 @@ export function ArtistList({ isOwnPage, displayedUserId }) {
 
   const artistText = artistsList.map((artist, index) => {
     return (
-      <div className="flex flex-row" key={index} id={artist}>
+      <div className="" key={index} id={artist}>
         {artist.toUpperCase() + " "}
         {isBeingEdited ? (
           <div>
@@ -156,9 +156,16 @@ export function ArtistList({ isOwnPage, displayedUserId }) {
           </div>
         ) : null}
       </div>
-      <div className="text-[1.5rem] font-semibold leading-[1.2em] pr-[1em] flex flex-row">
+      <div className="flex flex-row flex-wrap text-[1.5rem] font-semibold leading-[1.2em] pr-[1em] w-[80%]">
         {artistText}
       </div>
+      {/* <button
+        onClick={() => {
+          console.log(artistText);
+        }}
+      >
+        Hey
+      </button> */}
       {isBeingEdited ? newArtistInput : null}
     </div>
   );
