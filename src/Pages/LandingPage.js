@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 export const LandingPage = ({ motion }) => {
   const [loadedVideo, setLoadedVideo] = useState(false);
-
+  const VIDEO_URL =
+    "https://firebasestorage.googleapis.com/v0/b/rocket-sessions.appspot.com/o/seederfiles%2Fjamminghd.mp4?alt=media&token=7664dd7c-922a-417a-858f-d03e45aa0d80";
   const navigate = useNavigate();
 
   const titletext = "SESSIONS";
@@ -21,8 +22,17 @@ export const LandingPage = ({ motion }) => {
               duration: 0.5,
             }}
           >
-            <motion.h1 className="font-bold text-[3rem] md:text-[6rem] lg:text-[10rem] leading-0 pt-[1.5em] lg:pt-[0em] md:pt-[0em] drop-shadow-md">
-              {titletext}
+            <motion.h1 className="font-bold text-white text-[3rem] md:text-[6rem] lg:text-[10rem] leading-0 pt-[1.5em] lg:pt-[0em] md:pt-[0em] drop-shadow-md">
+              <div className="flex flex-row justify-center w-full">
+                <div className="w-[80%] lg:w-[45%] md:w-[50%]">
+                  <div className="flex flex-row justify-between w-full h-[2rem] lg:h-[4rem]">
+                    <div className="w-[20%] h-[full] bg-[#2B6CAA] mr-[.7em]"></div>
+                    <div className="w-[20%] h-[full] bg-[#AB3257] mr-[.7em]"></div>
+                    <div className="w-[70%] h-[full] bg-[#FFB800] "></div>
+                  </div>
+                  <p className="lg:mt-[-1rem]">{titletext}</p>
+                </div>
+              </div>
               {/* {titletext.split("").map((char, index) => {
                 return (
                   <li
@@ -42,7 +52,8 @@ export const LandingPage = ({ motion }) => {
               })} */}
             </motion.h1>
 
-            <div>
+            {/* <div className="bg-opacity-[20%] bg-slate-800 rounded-md p-[1em] shadow-md backdrop-blur-sm"> */}
+            <div className=" rounded-md p-[1em] shadow-md ">
               <input
                 type="button"
                 value="SIGN IN"
@@ -59,7 +70,7 @@ export const LandingPage = ({ motion }) => {
                 onClick={() => {
                   navigate("signup");
                 }}
-                className="primary-cta-btn w-[100%] lg:w-[50%] "
+                className="secondary-cta-btn w-[100%] lg:w-[50%] "
               />
             </div>
           </motion.div>
@@ -68,7 +79,7 @@ export const LandingPage = ({ motion }) => {
         <div className="video-wrapper">
           <video
             id="videosrc"
-            src="https://firebasestorage.googleapis.com/v0/b/dev-portfolio-sq.appspot.com/o/random%2Fpexels-brixiv-6462451%20(360p).mp4?alt=media&token=9b9eb18d-fcb2-46f4-9c74-f8f0ea2428a5"
+            src={VIDEO_URL}
             autoPlay
             loop
             muted

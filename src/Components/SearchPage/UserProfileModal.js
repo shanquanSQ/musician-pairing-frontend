@@ -18,10 +18,14 @@ const socket = io(process.env.REACT_APP_BACKEND_URL);
 
 export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
 
+
     const [pageOwnerInfo, setPageOwnerInfo] = useState(null)
     const [isOwnPage, setIsOwnPage] = useState(false); 
     const [textField, setTextField] = useState({ roomname: "" });
     const [isBeingEdited, setIsBeingEdited] = useState(false);
+  
+    const numberOfSessions = "65";
+    const uniqueCollaborators = "30";
 
     const navigate = useNavigate();
 
@@ -35,16 +39,11 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
     getUserInfo();
   }, []);
 
-  const numberOfSessions = "65";
-  const uniqueCollaborators = "30";
-
   const handleCreateRoomForTwo = async () => {
     if (textField.roomname != "") {
       const createdRoom = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/users/createNewChatroomForTwo`,
         {
-          //userId:'the currently logged in user',
-          //secondUserFullName:pageOwnerInfo.fullName,
           secondUserId: pageOwnerInfo.id,
           name: textField.roomname,
           genresPlayed: "",
@@ -85,16 +84,9 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
             />
           </div>
         </div>
-        <button
-          onClick={() => {
-            console.log(textField.roomname);
-          }}
-        >
-          HELLO
-        </button>
-        
-        <div className="flex flex-row justify-center  items-center h-[100%] gap-[0em] ">
-          <div className="flex flex-col gap-[1em] h-[100%] lg:w-[60%] md:w-[70%] w-[800%] px-[0em] ">
+
+        <div className="flex flex-row justify-center items-center h-[100%] gap-[0em] mb-[300px] lg:mb-[4em] ">
+          <div className="flex flex-col gap-[1em] h-[100%] lg:w-[60%] md:w-[70%] w-[80%] py-[1em] ">
             {pageOwnerInfo ? (
               <Username
                 isOwnPage={isOwnPage}
@@ -142,7 +134,7 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
               isOwnPage={isOwnPage}
               displayedUserId={pageOwnerUserId}
             />
-
+// finalp2
             <div>
               {!isBeingEdited ? <input
                 type="button"
@@ -152,6 +144,12 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
               /> : null}
               {isBeingEdited ?
               <>
+  //              
+            <div className="">
+              <p className="text-slate-800 font-semibold text-center text-txtcolor-primary text-[2rem] mt-[0em] lg:mt-[1em] md:mt-[1em]">
+                JAM WITH ME?
+              </p>
+// dev
               <input
                 type="text"
                 name="roomname"
@@ -163,12 +161,19 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
               />
               <input
                 type="button"
+// finalp2
                 value="Confirm Create"
                 onClick={handleCreateRoomForTwo}
                 className="secondary-cta-btn w-[100%] lg:w-[100%]"
               /> 
               </> : null
               }
+//
+                value="CREATE ROOM WITH ME!"
+                onClick={handleCreateRoomForTwo}
+                className="secondary-cta-btn w-[100%] lg:w-[100%] mb-[1em]"
+              />
+// dev
             </div>
           </div>
         </div>

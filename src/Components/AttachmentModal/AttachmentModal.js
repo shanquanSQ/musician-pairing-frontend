@@ -137,25 +137,26 @@ export const AttachmentModal = ({
             <img
               src={URL.createObjectURL(uploadedFile.fileInputFile)}
               alt={URL.createObjectURL(uploadedFile.fileInputFile).toString()}
-              className="w-[100%] h-[100%] object-cover"
+              className="object-cover"
             />
           ) : null}
 
-          {uploadedFile.fileInputFile !== null &&
-          ACCEPTED_VIDEO_FORMATS.includes(uploadedFile.fileInputFile.type) ? (
-            <video controls className="h-full object-contain">
-              <source
-                src={URL.createObjectURL(uploadedFile.fileInputFile)}
-                type="video/mp4"
-                className="object-cover"
-              />
-            </video>
-          ) : (
-            <h1 className="text-center">Upload An Image or Video</h1>
-          )}
+          {
+            uploadedFile.fileInputFile !== null &&
+            ACCEPTED_VIDEO_FORMATS.includes(uploadedFile.fileInputFile.type) ? (
+              <video controls className="h-full object-contain">
+                <source
+                  src={URL.createObjectURL(uploadedFile.fileInputFile)}
+                  type="video/mp4"
+                  className="object-cover"
+                />
+              </video>
+            ) : null
+            // <h1 className="text-center">Upload An Image or Video</h1>
+          }
         </div>
 
-        <form id="docpicker" className="text-center">
+        <form id="docpicker" className="text-center mb-[2em]">
           {/* some kind of pre-processing is already done, so fileInputValue doesnt need to be */}
           <input
             id="fileinputform"

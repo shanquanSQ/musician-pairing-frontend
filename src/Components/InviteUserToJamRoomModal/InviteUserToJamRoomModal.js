@@ -42,7 +42,7 @@ export const InviteUserToJamRoomModal = ({ removeModal, chatroomId }) => {
       );
 
       alert("Invited the User!");
-      socket.emit("invited-one-user", textField.invitedUserId);
+      socket.emit("invited-one-user", textField.invitedUserId, chatroomId);
       removeModal();
     } else {
       alert("Please Invite A User!");

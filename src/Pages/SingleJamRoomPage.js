@@ -65,8 +65,8 @@ export const SingleJamRoomPage = () => {
         setCurrentUser(currentUserInfo.data.user);
         setUserId(currentUserInfo.data.user.id);
 
-        console.log("currentUserInfo is ", currentUserInfo.data.user);
-        console.log("END STEP 1");
+        // console.log("currentUserInfo is ", currentUserInfo.data.user);
+        // console.log("END STEP 1");
 
         setIsAuthenticated(true);
       };
@@ -117,6 +117,12 @@ export const SingleJamRoomPage = () => {
     socket.on("refresh-attachments", () => {
       getChatroomInfo();
       getChatroomAttachments();
+      console.log("RUNNING");
+    });
+
+    socket.on("you-have-been-invited", () => {
+      console.log("INVITER'S SIDE");
+      getChatroomUsers();
     });
   }, [socket]);
 
@@ -127,31 +133,33 @@ export const SingleJamRoomPage = () => {
 
   /** BACKEND REQUESTS */
   const getChatroomInfo = async () => {
-    console.log("tokenAuth outside: ", tokenAuth);
-    if (tokenAuth) {
-      console.log("token auth inside: ", tokenAuth);
-      let updatedToken = localStorage.getItem("token");
-      let chatroomInfo = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/chatrooms/${chatroomId}/getAllChatroomMessages`,
-        {
-          headers: { Authorization: updatedToken },
-        }
-      );
-
-      if (chatroomInfo.data.success === true) {
-        setRoomData(chatroomInfo.data.data);
-        setRoomMessageFlag(true);
-      } else {
-        alert("Unable to get specific chatroom data.");
+    //   console.log("tokenAuth outside: ", tokenAuth);
+    //   if (tokenAuth) {
+    //     console.log("token auth inside: ", tokenAuth);
+    //     let updatedToken = localStorage.getItem("token");
+    let chatroomInfo = await axios.get(
+      `${process.env.REACT_APP_BACKEND_URL}/chatrooms/${chatroomId}/getAllChatroomMessages`,
+      {
+        headers: { Authorization: localStorage.getItem("token") },
       }
+    );
+
+    if (chatroomInfo.data.success === true) {
+      setRoomData(chatroomInfo.data.data);
+      setRoomMessageFlag(true);
+    } else {
+      alert("Unable to get specific chatroom data.");
     }
+    // }
   };
 
   const getChatroomDetails = async () => {
+    console.log("");
+    console.log("chatroomId is: ", chatroomId);
     let chatroomDetails = await axios.get(
       `${process.env.REACT_APP_BACKEND_URL}/chatrooms/${chatroomId}/getChatroomDetails`,
       {
-        headers: { Authorization: tokenAuth },
+        headers: { Authorization: localStorage.getItem("token") },
       }
     );
 
@@ -166,7 +174,7 @@ export const SingleJamRoomPage = () => {
     let allUsers = await axios.get(
       `${process.env.REACT_APP_BACKEND_URL}/chatrooms/${chatroomId}/getAllChatroomUsers`,
       {
-        headers: { Authorization: tokenAuth },
+        headers: { Authorization: localStorage.getItem("token") },
       }
     );
 
@@ -185,7 +193,7 @@ export const SingleJamRoomPage = () => {
         .get(
           `${process.env.REACT_APP_BACKEND_URL}/chatrooms/${chatroomId}/getAllChatroomAttachments`,
           {
-            headers: { Authorization: authToken },
+            headers: { Authorization: localStorage.getItem("token") },
           }
         )
         .then((allAttachments) => {
@@ -211,7 +219,7 @@ export const SingleJamRoomPage = () => {
           chatroomId: chatroomId,
           content: userMessage.message,
         },
-        { headers: { Authorization: tokenAuth } }
+        { headers: { Authorization: localStorage.getItem("token") } }
       );
 
       // console.log("Sent your message!");
@@ -286,7 +294,9 @@ export const SingleJamRoomPage = () => {
               className="font-bold text-txtcolor-primary text-[1.5rem] text-center balance scale-100 transition-all hover:cursor-pointer active:scale-95 origin-center"
               onClick={handleUsersInRoomModal}
             >
+
                {roomDetails && roomDetails.name}
+
             </h1>
            
 
@@ -299,19 +309,26 @@ export const SingleJamRoomPage = () => {
               </div>
             </div>
 
-            {/* <button
+            <button
               onClick={() => {
-                console.log("HEY", roomUsers);
+                console.log(`roomData: `, JSON.stringify(roomData));
+                console.log(`roomDetails: `, JSON.stringify(roomDetails));
+                console.log(`roomUsers: `, JSON.stringify(roomUsers));
+                console.log(
+                  `roomAttachments: `,
+                  JSON.stringify(roomAttachments)
+                );
               }}
               className="bg-red-500 px-2 py-1"
             >
               View room data state
             </button>
-            <br /> */}
+            <br />
 
             {/* Sorting message left and right by user logged in */}
             <div className="pr-[1.5em] h-[100%] mb-[1em] py-[1em] border-b-[1px] border-t-[1px] border-slate-300 overflow-y-auto">
               {roomData &&
+                roomUsers &&
                 roomData.map((elementdata, index) => {
                   if (elementdata.authorId === userId) {
                     return (
