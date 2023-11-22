@@ -12,6 +12,9 @@ export function Username({ isOwnPage, displayedUserId, storedUsername }) {
     const [isBeingEdited, setIsBeingEdited] = useState(false);
 
     const writeData = async () => {
+        if(!username) {
+            alert('Please enter a username')
+        } else {
         setIsBeingEdited(false);
         axios.put(`${BACKEND_URL}/users/${displayedUserId}`,
             {
@@ -20,6 +23,7 @@ export function Username({ isOwnPage, displayedUserId, storedUsername }) {
             {
                 headers: { Authorization: localStorage.getItem("token") },
             });
+        }
     };
 
     const revertData = () => {

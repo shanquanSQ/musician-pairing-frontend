@@ -16,16 +16,18 @@ import { io } from "socket.io-client"; // io is a function to call an individual
 const socket = io(`http://localhost:8080`);
 
 export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
-  const [pageOwnerInfo, setPageOwnerInfo] = useState(null);
-  const [isOwnPage, setIsOwnPage] = useState(false);
-  const [textField, setTextField] = useState({ roomname: "" });
 
-  useEffect(() => {
-    const getUserInfo = async () => {
-      const pageOwnerInfo = await axios.get(
-        `${BACKEND_URL}/users/${pageOwnerUserId}`,
-        {
-          headers: { Authorization: localStorage.getItem("token") },
+    const [pageOwnerInfo, setPageOwnerInfo] = useState(null)
+    const [isOwnPage, setIsOwnPage] = useState(false); 
+    const [textField, setTextField] = useState({ roomname: "" });
+    const [isBeingEdited, setIsBeingEdited] = useState(false);
+
+    useEffect(()=>{
+        const getUserInfo = async () => {
+          const retrievedPageOwnerInfo = await axios.get(`${BACKEND_URL}/users/${pageOwnerUserId}`,{
+            headers: { Authorization: localStorage.getItem("token") },
+        })
+          setPageOwnerInfo(retrievedPageOwnerInfo.data.user)
         }
       );
       setPageOwnerInfo(pageOwnerInfo.data.user);
@@ -33,8 +35,7 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
     getUserInfo();
   }, []);
 
-  const numberOfSessions = "65";
-  const uniqueCollaborators = "30";
+
 
   const handleCreateRoomForTwo = async () => {
     if (textField.roomname != "") {
@@ -42,7 +43,8 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
         `${BACKEND_URL}/users/createNewChatroomForTwo`,
         {
           //userId:'the currently logged in user',
-          secondUserId: pageOwnerUserId,
+          secondUserFullName:pageOwnerInfo.fullName,
+          secondUserId: pageOwnerInfo.id,
           name: textField.roomname,
           genresPlayed: "",
           instrumentsWanted: "",
