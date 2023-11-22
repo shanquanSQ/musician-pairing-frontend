@@ -12,6 +12,7 @@ export function Bio({ isOwnPage, displayedUserId, storedBio }) {
   const [isBeingEdited, setIsBeingEdited] = useState(false);
 
   const writeData = async () => {
+    console.log(bio)
     setIsBeingEdited(false);
     axios.put(
       `${BACKEND_URL}/users/${displayedUserId}`,

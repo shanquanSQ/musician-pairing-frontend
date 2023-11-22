@@ -113,16 +113,13 @@ export const SearchPage = ({ motion }) => {
                   />
                 </div>
               </div>
+
               <div className="flex flex-col pl-[1em] h-[100%]">
                 <p className="font-bold text-txtcolor-primary text-[1.5rem]">
                   {user.fullName}
                 </p>
-                {/* Shouldn't need overflow for the description. Should read in a single line. I'm putting it now just to see the styling*/}
                 <p className="overflow-hidden">
-                  Instruments: {user.instruments[0].name} -{" "}
-                  {user.instruments[0].userInstrument.instrumentExperience}If
-                  category was instrument, display that instrument and exp; else
-                  display nothing here
+                 {user.instruments[0].userInstrument.instrumentExperience}y experience in {user.instruments[0].name}
                 </p>
               </div>
             </div>

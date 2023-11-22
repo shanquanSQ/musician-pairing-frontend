@@ -9,16 +9,18 @@ import { GenreList } from "../../Components/ProfilePage/GenreList";
 import { BACKEND_URL } from "../../constants.js";
 
 export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
-  const [pageOwnerInfo, setPageOwnerInfo] = useState(null);
-  const [isOwnPage, setIsOwnPage] = useState(false);
-  const [textField, setTextField] = useState({ roomname: "" });
 
-  useEffect(() => {
-    const getUserInfo = async () => {
-      const pageOwnerInfo = await axios.get(
-        `${BACKEND_URL}/users/${pageOwnerUserId}`,
-        {
-          headers: { Authorization: localStorage.getItem("token") },
+    const [pageOwnerInfo, setPageOwnerInfo] = useState(null)
+    const [isOwnPage, setIsOwnPage] = useState(false); 
+    const [textField, setTextField] = useState({ roomname: "" });
+    const [isBeingEdited, setIsBeingEdited] = useState(false);
+
+    useEffect(()=>{
+        const getUserInfo = async () => {
+          const retrievedPageOwnerInfo = await axios.get(`${BACKEND_URL}/users/${pageOwnerUserId}`,{
+            headers: { Authorization: localStorage.getItem("token") },
+        })
+          setPageOwnerInfo(retrievedPageOwnerInfo.data.user)
         }
       );
       setPageOwnerInfo(pageOwnerInfo.data.user);
@@ -26,25 +28,26 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
     getUserInfo();
   }, []);
 
-  const numberOfSessions = "65";
-  const uniqueCollaborators = "30";
 
-  const handleCreateRoomForTwo = async () => {
-    const createdRoom = await axios.post(
-      `${BACKEND_URL}/users/createNewChatroomForTwo`,
-      {
-        //userId:'the currently logged in user',
-        secondUserId: pageOwnerUserId,
-        name: textField.roomname,
-        genresPlayed: "",
-        instrumentsWanted: "",
-      },
-      {
-        headers: { Authorization: localStorage.getItem("token") },
-      }
-    );
-    removeModal();
-  };
+      const numberOfSessions = "65";
+      const uniqueCollaborators = "30";
+      const handleCreateRoomForTwo = async () => {
+        const createdRoom = await axios.post(
+          `${BACKEND_URL}/users/createNewChatroomForTwo`,
+          {
+            //userId:'the currently logged in user',
+            secondUserFullName:pageOwnerInfo.fullName,
+            secondUserId: pageOwnerInfo.id,
+            name: textField.roomname,
+            genresPlayed: '',
+            instrumentsWanted: '',
+          },
+          {
+            headers: { Authorization: localStorage.getItem("token") },
+          }
+        );
+        removeModal()
+      };
 
   const handleTextChange = (ev) => {
     let name = ev.target.name;

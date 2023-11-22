@@ -46,7 +46,7 @@ export function GenreList({ isOwnPage, displayedUserId }) {
       }
     );
     setIsBeingEdited(false);
-    setGenresList(genreInfo.data.genreInterests);
+    setGenresList(genreInfo.data.genreInterests.map((genre) => genre.name));
   };
 
   const addGenre = () => {
