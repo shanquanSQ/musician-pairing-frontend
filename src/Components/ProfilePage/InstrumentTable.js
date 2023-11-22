@@ -179,7 +179,7 @@ export function InstrumentTable({ isOwnPage, displayedUserId }) {
   return (
     <div>
       <div className="flex flex-row">
-        <h1 className="font-bold text-txtcolor-primary text-[1.2rem] text-left mx-2">
+        <h1 className="font-bold text-txtcolor-primary text-[1.2rem] text-left">
           INSTRUMENTS/EXPERIENCE
         </h1>
         {isBeingEdited ? (

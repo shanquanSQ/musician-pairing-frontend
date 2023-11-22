@@ -11,6 +11,7 @@ import { UserPlusIcon } from "@heroicons/react/24/outline";
 // Import Sockets
 import { io } from "socket.io-client"; // io is a function to call an individual socket. the package for frontend(client side) is npm i socket.io-client
 import { InviteUserToJamRoomModal } from "../Components/InviteUserToJamRoomModal/InviteUserToJamRoomModal";
+import { UsersInRoomModal } from "../Components/UsersInRoomModal/UsersInRoomModal";
 
 const socket = io(`http://localhost:8080`);
 
@@ -34,9 +35,9 @@ export const SingleJamRoomPage = () => {
 
   const [attachmentModalToggle, setAttachmentModalToggle] = useState(false);
   const [addUserModalToggle, setAddUserModalToggle] = useState(false);
+  const [usersInRoomModalToggle, setUsersInRoomModalToggle] = useState(false);
 
   let { chatroomId } = useParams();
-  // const userId; // Need to tie in with Auth
 
   // The URL of the backend goes into the socket
   //// const socket = io(`${process.env.REACT_APP_BACKEND_URL}`); // Doesnt work, Express server is on 8000. So we'll use 8080 for sockets.
@@ -269,33 +270,44 @@ export const SingleJamRoomPage = () => {
     setAddUserModalToggle(false);
   };
 
+  const handleUsersInRoomModal = () => {
+    setUsersInRoomModalToggle(!usersInRoomModalToggle);
+  };
+
+  const removeUsersInRoomModal = () => {
+    setUsersInRoomModalToggle(false);
+  };
+
   return (
     <>
       <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em] ">
         <div className="flex flex-col w-full gap-0 lg:w-[30%] justify-between overflow-x-hidden overflow-y-auto">
           <div className="flex flex-col pt-[0em] mb-[0em] h-[100%]">
-            {/* <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-center balance">
-              {roomDetails && roomDetails.name}
-            </h1> */}           
-            {roomDetails && <JamRoomName storedRoomName = {roomDetails.name} chatroomId = {chatroomId} />}
-            <div className="flex flex-row justify-center h-[10%] text-sm text-slate-800 text-center pt-1 pb-0 mb-0  ">
-              <div className="flex flex-row justify-center w-[50%]">
+            <h1
+              className="font-bold text-txtcolor-primary text-[1.5rem] text-center balance scale-100 transition-all hover:cursor-pointer active:scale-95 origin-center"
+              onClick={handleUsersInRoomModal}
+            >
+              {roomDetails && <JamRoomName storedRoomName = {roomDetails.name} chatroomId = {chatroomId} />}
+            </h1>
+
+            <div className="flex flex-row justify-center h-[10%] text-sm text-slate-800 text-center pt-1 pb-[1em] mb-0">
+              <div className="flex flex-row justify-end b w-[90%] ">
                 <UserPlusIcon
-                  className="h-8 w-8 text-gray-500"
+                  className="h-8 w-8 text-gray-500 origin-center scale-100 transition-all hover:scale-110 active:scale-95 "
                   onClick={handleAddUserToRoomModal}
                 />
               </div>
             </div>
 
-            <button
+            {/* <button
               onClick={() => {
-                console.log(roomUsers);
+                console.log("HEY", roomUsers);
               }}
               className="bg-red-500 px-2 py-1"
             >
               View room data state
             </button>
-            <br />
+            <br /> */}
 
             {/* Sorting message left and right by user logged in */}
             <div className="pr-[1.5em] h-[100%] mb-[1em] py-[1em] border-b-[1px] border-t-[1px] border-slate-300 overflow-y-auto">
@@ -399,6 +411,20 @@ export const SingleJamRoomPage = () => {
         {addUserModalToggle && (
           <div
             onClick={removeAddUserModal}
+            className="fixed top-0 left-0 w-[100vw] h-full bg-black z-[9] transition-all opacity-50"
+          ></div>
+        )}
+
+        {usersInRoomModalToggle && (
+          <UsersInRoomModal
+            removeModal={removeUsersInRoomModal}
+            chatroomId={chatroomId}
+            roomusers={roomUsers}
+          />
+        )}
+        {usersInRoomModalToggle && (
+          <div
+            onClick={removeUsersInRoomModal}
             className="fixed top-0 left-0 w-[100vw] h-full bg-black z-[9] transition-all opacity-50"
           ></div>
         )}
