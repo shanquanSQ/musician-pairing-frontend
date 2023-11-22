@@ -164,7 +164,7 @@ export const JamChatroomPage = ({ motion }) => {
               </div>
             </div>
 
-            <button
+            {/* <button
               onClick={() => {
                 console.log(currentUser);
               }}
@@ -172,7 +172,7 @@ export const JamChatroomPage = ({ motion }) => {
             >
               View room data state
             </button>
-            <br />
+            <br /> */}
 
             <div ref={myRef} className="pr-[2em]">
               {userRoomData &&

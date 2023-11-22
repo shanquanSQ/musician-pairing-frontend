@@ -309,7 +309,7 @@ export const SingleJamRoomPage = () => {
               </div>
             </div>
 
-            <button
+            {/* <button
               onClick={() => {
                 console.log(`roomData: `, JSON.stringify(roomData));
                 console.log(`roomDetails: `, JSON.stringify(roomDetails));
@@ -323,7 +323,7 @@ export const SingleJamRoomPage = () => {
             >
               View room data state
             </button>
-            <br />
+            <br /> */}
 
             {/* Sorting message left and right by user logged in */}
             <div className="pr-[1.5em] h-[100%] mb-[1em] py-[1em] border-b-[1px] border-t-[1px] border-slate-300 overflow-y-auto">
