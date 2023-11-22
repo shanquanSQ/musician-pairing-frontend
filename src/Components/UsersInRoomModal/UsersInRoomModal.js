@@ -11,7 +11,7 @@ export const UsersInRoomModal = ({ removeModal, roomusers }) => {
           </p>
         </div>
 
-        <div className="flex flex-col font-medium pt-[1em] text-center h-[80%] overflow-y-scroll">
+        <div className="flex flex-col font-medium pt-[1em] text-center h-[80%] overflow-y-auto">
           {roomusers &&
             roomusers.map((element, index) => {
               return (

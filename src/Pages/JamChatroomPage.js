@@ -68,18 +68,29 @@ export const JamChatroomPage = ({ motion }) => {
 
   useEffect(() => {
     socket.on("new-room-created", () => {
-      console.log("refreshing room data");
-
       if (userId) {
         getRoomData();
       }
     });
-  }, [socket, userId]);
 
-  // useEffect(() => {
-  //   scrollBottom();
-  //   // setLoadFlag(false);
-  // }, [loadFlag]);
+    socket.on("room-created-for-two", (inviteduserId) => {
+      if (userId) {
+        if (inviteduserId == userId) {
+          alert("You have been invited to a room!");
+          getRoomData();
+        }
+      }
+    });
+
+    socket.on("you-have-been-invited", (inviteduserId) => {
+      if (userId) {
+        if (inviteduserId == userId) {
+          alert("You have been invited to a room!");
+          getRoomData();
+        }
+      }
+    });
+  }, [socket, userId]);
 
   // WIP. Optional Function, can ignore
   const scrollBottom = () => {
@@ -130,7 +141,7 @@ export const JamChatroomPage = ({ motion }) => {
 
   return (
     <>
-    {/* {console.log(userRoomData)} */}
+      {/* {console.log(userRoomData)} */}
       <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em] ">
         <div className="flex flex-col w-full lg:w-[30%] justify-between overflow-x-hidden overflow-y-auto">
           <div className="flex flex-col pt-[2em] mb-[-10em]">
@@ -148,7 +159,7 @@ export const JamChatroomPage = ({ motion }) => {
                 />
               </div>
             </div>
-{/*             
+            {/*             
             <button
               onClick={() => {
                 console.log(userRoomData);

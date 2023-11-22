@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
+
+// Import Components
 import { Username } from "../../Components/ProfilePage/Username";
 import { Bio } from "../../Components/ProfilePage/Bio";
 import { InstrumentTable } from "../../Components/ProfilePage/InstrumentTable";
 import { ArtistList } from "../../Components/ProfilePage/ArtistList";
 import { GenreList } from "../../Components/ProfilePage/GenreList";
+
 import { BACKEND_URL } from "../../constants.js";
+
+// Import Sockets
+import { io } from "socket.io-client"; // io is a function to call an individual socket. the package for frontend(client side) is npm i socket.io-client
+const socket = io(`http://localhost:8080`);
 
 export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
 
@@ -29,25 +36,31 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
   }, []);
 
 
-      const numberOfSessions = "65";
-      const uniqueCollaborators = "30";
-      const handleCreateRoomForTwo = async () => {
-        const createdRoom = await axios.post(
-          `${BACKEND_URL}/users/createNewChatroomForTwo`,
-          {
-            //userId:'the currently logged in user',
-            secondUserFullName:pageOwnerInfo.fullName,
-            secondUserId: pageOwnerInfo.id,
-            name: textField.roomname,
-            genresPlayed: '',
-            instrumentsWanted: '',
-          },
-          {
-            headers: { Authorization: localStorage.getItem("token") },
-          }
-        );
-        removeModal()
-      };
+
+  const handleCreateRoomForTwo = async () => {
+    if (textField.roomname != "") {
+      const createdRoom = await axios.post(
+        `${BACKEND_URL}/users/createNewChatroomForTwo`,
+        {
+          //userId:'the currently logged in user',
+          secondUserFullName:pageOwnerInfo.fullName,
+          secondUserId: pageOwnerInfo.id,
+          name: textField.roomname,
+          genresPlayed: "",
+          instrumentsWanted: "",
+        },
+        {
+          headers: { Authorization: localStorage.getItem("token") },
+        }
+      );
+
+      alert("Room Created!");
+      socket.emit("create-room-for-two", pageOwnerUserId);
+      removeModal();
+    } else {
+      alert("Please key in at least one valid character");
+    }
+  };
 
   const handleTextChange = (ev) => {
     let name = ev.target.name;
@@ -61,7 +74,7 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
   return (
     <>
       <div className="overflow-y-auto absolute flex flex-col top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[90%] md:w-[50%] lg:w-[40%] h-[80%] bg-white rounded-md border py-[2em] px-[1em] shadow-sm z-[90] gap-[1em]">
-        <div className="flex flex-row w-full h-[30%]  justify-center">
+        <div className="flex flex-row w-full h-[30%] justify-center">
           <div className="aspect-square mr-[1em] rounded-[50%] overflow-hidden ">
             <img
               src={pageOwnerInfo ? pageOwnerInfo.profilePictureUrl : null}
@@ -70,6 +83,13 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
             />
           </div>
         </div>
+        <button
+          onClick={() => {
+            console.log(textField.roomname);
+          }}
+        >
+          HELLO
+        </button>
 
         <div className="flex flex-row justify-center  items-center h-[100%] gap-[0em] ">
           <div className="flex flex-col gap-[1em] h-[100%] lg:w-[60%] md:w-[70%] w-[800%] px-[0em] ">
@@ -148,8 +168,6 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
           <XMarkIcon className="h-6 w-6 text-txtcolor-secondary" />
         </div>
       </div>
-      {/* <div className = 'h-[70%] lg:w-[100%] overflow-y-auto items-center'>
-      </div> */}
     </>
   );
 };
