@@ -33,7 +33,7 @@ export const ProfileIconModal = ({ userinfo, removeModal }) => {
           </div>
         </div>
 
-        <div>
+        {/* <div>
           <input
             type="button"
             value="INVITE USER"
@@ -42,7 +42,7 @@ export const ProfileIconModal = ({ userinfo, removeModal }) => {
             }}
             className="secondary-cta-btn w-[100%] lg:w-[100%] "
           />
-        </div>
+        </div> */}
 
         <div
           className="fixed top-[1em] right-[1em] hover:cursor-pointer"
