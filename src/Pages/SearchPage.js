@@ -95,7 +95,7 @@ export const SearchPage = ({ motion }) => {
         else {
           return (
             <div
-              className="flex flex-row h-[10em] p-[1em] bg-white text-black border-[1px] border-slate-200 rounded-md shadow-md mt-[1em] overflow-hidden hover:cursor-pointer scale-100 transition-all active:scale-95"
+              className="flex flex-row h-[10em] p-[1em] bg-white text-black border-[1px] border-slate-200 rounded-md shadow-md overflow-hidden hover:cursor-pointer scale-100 transition-all active:scale-95 mb-[1em]"
               onClick={() => {
                 setModalProfileId(user.id);
                 console.log(modalProfileId);
@@ -114,13 +114,15 @@ export const SearchPage = ({ motion }) => {
                 </div>
               </div>
 
-              <div className="flex flex-col pl-[1em] h-[100%]">
+              <div className="flex flex-col pl-[1em] h-[100%] pt-[3%]">
                 <p className="font-bold text-txtcolor-primary text-[1.5rem]">
                   {user.fullName}
                 </p>
-                <p className="overflow-hidden">
-                 {user.instruments[0].userInstrument.instrumentExperience}y experience in {user.instruments[0].name}
+                <p className="text-slate-400 leading-0">
+                  {user.instruments[0].userInstrument.instrumentExperience}{" "}
+                  Years experience
                 </p>
+                <p className="font-semibold">{user.instruments[0].name}</p>
               </div>
             </div>
           );
@@ -141,20 +143,12 @@ export const SearchPage = ({ motion }) => {
               duration: 0.5,
             }}
           >
-            <div className="flex flex-col pt-[2em] mb-[-10em] gap-[2em]">
+            <div className="flex flex-col justify-start pt-[2em] gap-[2em] h-[50%] lg:h-[45%]">
               <div>
                 <h1 className="font-bold text-txtcolor-primary text-[1. 2rem] lg:text-[1.5rem] text-left ">
                   CATEGORY /
                 </h1>
-                {/* <input
-                type="text"
-                name="username"
-                onChange={handleChange}
-                value={user.username}
-                autoComplete="off"
-                placeholder="USERNAME"
-                className="primary-input-form"
-              /> */}
+
                 <CategoryDropDown
                   initialterm="Categories"
                   inputdata={categoriesList}
@@ -166,15 +160,6 @@ export const SearchPage = ({ motion }) => {
                 <h1 className="font-bold text-txtcolor-primary text-[1.2rem] lg:text-[1.5rem] text-left">
                   SEARCH /
                 </h1>
-                {/* <input
-                type="text"
-                name="password"
-                onChange={handleChange}
-                value={user.password}
-                autoComplete="off"
-                placeholder="PASSWORD"
-                className="primary-input-form"
-              /> */}
 
                 <CategoryDropDown
                   initialterm="Search"
@@ -184,12 +169,9 @@ export const SearchPage = ({ motion }) => {
               </div>
             </div>
 
-            {searchedUsers ? <div className="">{searchResults}</div> : null}
-            {/* {searchedUsers ? searchedUsers[0].fullName: null}
-            {searchedUsers.map((user)=>{
-              return (
-              <div>{user.fullName}
-              </div>)})} */}
+            <div className=" h-[60%] overflow-y-auto">
+              {searchedUsers ? <div className="">{searchResults}</div> : null}
+            </div>
 
             <div>
               <form onSubmit={handleSubmit}>

@@ -17,7 +17,6 @@ export const CategoryDropDown = ({ inputdata, initialterm, handleSelect }) => {
   const handleClickDropdown = (ev) => {
     setShowDropDown(!showDropDown);
   };
-  
 
   return (
     <>
@@ -26,8 +25,7 @@ export const CategoryDropDown = ({ inputdata, initialterm, handleSelect }) => {
           <p className="inline text-[2rem] font-semibold focus:outline-none ">
             {selectedCategory}
           </p>
-          {"   "}
-          <ChevronDownIcon className="h-6 w-6 text-[hsl(209,60%,50%)] inline ml-5 translate-y-[-4px]" />
+          <ChevronDownIcon className="h-6 w-6 text-[hsl(209,60%,50%)] block translate-y-[-4px]" />
         </button>
 
         <div

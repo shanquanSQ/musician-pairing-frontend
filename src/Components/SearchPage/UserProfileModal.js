@@ -16,26 +16,27 @@ import { io } from "socket.io-client"; // io is a function to call an individual
 const socket = io(`http://localhost:8080`);
 
 export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
+  const [pageOwnerInfo, setPageOwnerInfo] = useState(null);
+  const [isOwnPage, setIsOwnPage] = useState(false);
+  const [textField, setTextField] = useState({ roomname: "" });
+  const [isBeingEdited, setIsBeingEdited] = useState(false);
 
-    const [pageOwnerInfo, setPageOwnerInfo] = useState(null)
-    const [isOwnPage, setIsOwnPage] = useState(false); 
-    const [textField, setTextField] = useState({ roomname: "" });
-    const [isBeingEdited, setIsBeingEdited] = useState(false);
+  const numberOfSessions = "65";
+  const uniqueCollaborators = "30";
 
-    useEffect(()=>{
-        const getUserInfo = async () => {
-          const retrievedPageOwnerInfo = await axios.get(`${BACKEND_URL}/users/${pageOwnerUserId}`,{
-            headers: { Authorization: localStorage.getItem("token") },
-        })
-          setPageOwnerInfo(retrievedPageOwnerInfo.data.user)
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const retrievedPageOwnerInfo = await axios.get(
+        `${BACKEND_URL}/users/${pageOwnerUserId}`,
+        {
+          headers: { Authorization: localStorage.getItem("token") },
         }
       );
-      setPageOwnerInfo(pageOwnerInfo.data.user);
+      setPageOwnerInfo(retrievedPageOwnerInfo.data.user);
     };
+
     getUserInfo();
   }, []);
-
-
 
   const handleCreateRoomForTwo = async () => {
     if (textField.roomname != "") {
@@ -43,7 +44,7 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
         `${BACKEND_URL}/users/createNewChatroomForTwo`,
         {
           //userId:'the currently logged in user',
-          secondUserFullName:pageOwnerInfo.fullName,
+          secondUserFullName: pageOwnerInfo.fullName,
           secondUserId: pageOwnerInfo.id,
           name: textField.roomname,
           genresPlayed: "",
@@ -83,16 +84,9 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
             />
           </div>
         </div>
-        <button
-          onClick={() => {
-            console.log(textField.roomname);
-          }}
-        >
-          HELLO
-        </button>
 
-        <div className="flex flex-row justify-center  items-center h-[100%] gap-[0em] ">
-          <div className="flex flex-col gap-[1em] h-[100%] lg:w-[60%] md:w-[70%] w-[800%] px-[0em] ">
+        <div className="flex flex-row justify-center items-center h-[100%] gap-[0em] mb-[300px] lg:mb-[4em] ">
+          <div className="flex flex-col gap-[1em] h-[100%] lg:w-[60%] md:w-[70%] w-[80%] py-[1em] ">
             {pageOwnerInfo ? (
               <Username
                 isOwnPage={isOwnPage}
@@ -141,13 +135,10 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
               displayedUserId={pageOwnerUserId}
             />
 
-            <div>
-              <input
-                type="button"
-                value="Create Room"
-                onClick={handleCreateRoomForTwo}
-                className="secondary-cta-btn w-[100%] lg:w-[100%]"
-              />
+            <div className="">
+              <p className="text-slate-800 font-semibold text-center text-txtcolor-primary text-[2rem] mt-[0em] lg:mt-[1em] md:mt-[1em]">
+                JAM WITH ME?
+              </p>
               <input
                 type="text"
                 name="roomname"
@@ -156,6 +147,12 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
                 autoComplete="off"
                 placeholder="JAM ROOM NAME?"
                 className="primary-input-form text-center"
+              />
+              <input
+                type="button"
+                value="CREATE ROOM WITH ME!"
+                onClick={handleCreateRoomForTwo}
+                className="secondary-cta-btn w-[100%] lg:w-[100%] mb-[1em]"
               />
             </div>
           </div>
