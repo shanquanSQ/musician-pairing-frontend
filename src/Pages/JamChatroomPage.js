@@ -14,7 +14,7 @@ import { JoinJamRoomModal } from "../Components/JoinJamRoomModal/JoinJamRoomModa
 
 // Import Sockets
 import { io } from "socket.io-client"; // io is a function to call an individual socket. the package for frontend(client side) is npm i socket.io-client
-const socket = io(`http://localhost:8080`);
+const socket = io(process.env.REACT_APP_BACKEND_URL);
 
 export const JamChatroomPage = ({ motion }) => {
   const [tokenAuth, setTokenAuth] = useState(null);
@@ -68,12 +68,15 @@ export const JamChatroomPage = ({ motion }) => {
 
   useEffect(() => {
     socket.on("new-room-created", () => {
+      console.log("new room created");
       if (userId) {
+        console.log("new room has been created! getting data");
         getRoomData();
       }
     });
 
     socket.on("room-created-for-two", (inviteduserId) => {
+      console.log("YOU HAVE BEEN INVITED");
       if (userId) {
         if (inviteduserId == userId) {
           alert("You have been invited to a room!");
@@ -83,8 +86,9 @@ export const JamChatroomPage = ({ motion }) => {
     });
 
     socket.on("you-have-been-invited", (inviteduserId) => {
+      console.log("THE INVITED USER ID IS: ", inviteduserId);
       if (userId) {
-        if (inviteduserId == userId) {
+        if (inviteduserId == currentUser.fullName) {
           alert("You have been invited to a room!");
           getRoomData();
         }
@@ -159,16 +163,16 @@ export const JamChatroomPage = ({ motion }) => {
                 />
               </div>
             </div>
-            {/*             
+
             <button
               onClick={() => {
-                console.log(userRoomData);
+                console.log(currentUser);
               }}
               className="bg-red-500 px-2 py-1"
             >
               View room data state
             </button>
-            <br /> */}
+            <br />
 
             <div ref={myRef} className="pr-[2em]">
               {userRoomData &&

@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Import Sockets
 import { io } from "socket.io-client"; // io is a function to call an individual socket. the package for frontend(client side) is npm i socket.io-client
-const socket = io(`http://localhost:8080`);
+const socket = io(process.env.REACT_APP_BACKEND_URL);
 
 export const InviteUserToJamRoomModal = ({ removeModal, chatroomId }) => {
   const [tokenAuth, setTokenAuth] = useState(null);
@@ -42,7 +42,7 @@ export const InviteUserToJamRoomModal = ({ removeModal, chatroomId }) => {
       );
 
       alert("Invited the User!");
-      socket.emit("invited-one-user", textField.invitedUserId);
+      socket.emit("invited-one-user", textField.invitedUserId, chatroomId);
       removeModal();
     } else {
       alert("Please Invite A User!");

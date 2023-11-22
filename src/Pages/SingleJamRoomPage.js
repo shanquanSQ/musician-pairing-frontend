@@ -13,7 +13,7 @@ import { io } from "socket.io-client"; // io is a function to call an individual
 import { InviteUserToJamRoomModal } from "../Components/InviteUserToJamRoomModal/InviteUserToJamRoomModal";
 import { UsersInRoomModal } from "../Components/UsersInRoomModal/UsersInRoomModal";
 
-const socket = io(`http://localhost:8080`);
+const socket = io(process.env.REACT_APP_BACKEND_URL);
 
 let authToken;
 
@@ -32,6 +32,12 @@ export const SingleJamRoomPage = () => {
   const [userMessage, setUserMessage] = useState("");
   const [currentTypingUser, setCurrentTypingUser] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+
+  // const [filterMethod, setFilterMethod] = useState((messageDetails) => {
+  //   let list = [...roomUsers];
+  //   let results = list.filter((item) => item.id == messageDetails.authorId);
+  //   return "results";
+  // });
 
   const [attachmentModalToggle, setAttachmentModalToggle] = useState(false);
   const [addUserModalToggle, setAddUserModalToggle] = useState(false);
@@ -66,8 +72,8 @@ export const SingleJamRoomPage = () => {
         setCurrentUser(currentUserInfo.data.user);
         setUserId(currentUserInfo.data.user.id);
 
-        console.log("currentUserInfo is ", currentUserInfo.data.user);
-        console.log("END STEP 1");
+        // console.log("currentUserInfo is ", currentUserInfo.data.user);
+        // console.log("END STEP 1");
 
         setIsAuthenticated(true);
       };
@@ -116,8 +122,13 @@ export const SingleJamRoomPage = () => {
     });
 
     socket.on("refresh-attachments", () => {
+      // getChatroomInfo();
+      // getChatroomAttachments();
+      console.log("RUNNING");
       getChatroomInfo();
       getChatroomAttachments();
+      getChatroomDetails();
+      getChatroomUsers();
     });
   }, [socket]);
 
@@ -287,7 +298,12 @@ export const SingleJamRoomPage = () => {
               className="font-bold text-txtcolor-primary text-[1.5rem] text-center balance scale-100 transition-all hover:cursor-pointer active:scale-95 origin-center"
               onClick={handleUsersInRoomModal}
             >
-              {roomDetails && <JamRoomName storedRoomName = {roomDetails.name} chatroomId = {chatroomId} />}
+              {roomDetails && (
+                <JamRoomName
+                  storedRoomName={roomDetails.name}
+                  chatroomId={chatroomId}
+                />
+              )}
             </h1>
 
             <div className="flex flex-row justify-center h-[10%] text-sm text-slate-800 text-center pt-1 pb-[1em] mb-0">
@@ -301,7 +317,7 @@ export const SingleJamRoomPage = () => {
 
             {/* <button
               onClick={() => {
-                console.log("HEY", roomUsers);
+                console.log("HEY", filterMethod);
               }}
               className="bg-red-500 px-2 py-1"
             >
@@ -312,6 +328,7 @@ export const SingleJamRoomPage = () => {
             {/* Sorting message left and right by user logged in */}
             <div className="pr-[1.5em] h-[100%] mb-[1em] py-[1em] border-b-[1px] border-t-[1px] border-slate-300 overflow-y-auto">
               {roomData &&
+                roomUsers &&
                 roomData.map((elementdata, index) => {
                   if (elementdata.authorId === userId) {
                     return (
