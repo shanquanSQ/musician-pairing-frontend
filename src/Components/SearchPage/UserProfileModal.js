@@ -85,7 +85,7 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
           </div>
         </div>
 
-        <div className="flex flex-row justify-center items-center h-[100%] gap-[0em] mb-[300px] lg:mb-[4em] ">
+        <div className="flex flex-row justify-center items-center h-[100%] gap-[0em] mb-[300px] lg:mb-[4em]">
           <div className="flex flex-col gap-[1em] h-[100%] lg:w-[60%] md:w-[70%] w-[80%] py-[1em] ">
             {pageOwnerInfo ? (
               <Username
@@ -134,22 +134,19 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
               isOwnPage={isOwnPage}
               displayedUserId={pageOwnerUserId}
             />
-// finalp2
             <div>
               {!isBeingEdited ? <input
                 type="button"
-                value="Create Room"
+                value="CREATE ROOM WITH ME!"
                 onClick={()=>setIsBeingEdited(true)}
                 className="secondary-cta-btn w-[100%] lg:w-[100%]"
               /> : null}
               {isBeingEdited ?
-              <>
-  //              
-            <div className="">
+              <>    
+            {/* <div className="">
               <p className="text-slate-800 font-semibold text-center text-txtcolor-primary text-[2rem] mt-[0em] lg:mt-[1em] md:mt-[1em]">
                 JAM WITH ME?
-              </p>
-// dev
+              </p> */}
               <input
                 type="text"
                 name="roomname"
@@ -161,19 +158,12 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
               />
               <input
                 type="button"
-// finalp2
                 value="Confirm Create"
                 onClick={handleCreateRoomForTwo}
-                className="secondary-cta-btn w-[100%] lg:w-[100%]"
+                className="secondary-cta-btn w-[100%] lg:w-[100%] mb-[1em]"
               /> 
               </> : null
               }
-//
-                value="CREATE ROOM WITH ME!"
-                onClick={handleCreateRoomForTwo}
-                className="secondary-cta-btn w-[100%] lg:w-[100%] mb-[1em]"
-              />
-// dev
             </div>
           </div>
         </div>
