@@ -4,6 +4,7 @@ import axios from "axios";
 
 // Import Components
 import { SpeechBubble } from "../Components/SpeechBubble/SpeechBubble";
+import { JamRoomName } from "../Components/JamRoomPage/JamRoomName";
 import { AttachmentModal } from "../Components/AttachmentModal/AttachmentModal";
 import { UserPlusIcon } from "@heroicons/react/24/outline";
 
@@ -273,10 +274,10 @@ export const SingleJamRoomPage = () => {
       <div className="flex flex-row justify-center h-[100dvh] pt-[2em] pb-[4em] px-[2em] ">
         <div className="flex flex-col w-full gap-0 lg:w-[30%] justify-between overflow-x-hidden overflow-y-auto">
           <div className="flex flex-col pt-[0em] mb-[0em] h-[100%]">
-            <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-center balance">
+            {/* <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-center balance">
               {roomDetails && roomDetails.name}
-            </h1>
-
+            </h1> */}           
+            {roomDetails && <JamRoomName storedRoomName = {roomDetails.name} chatroomId = {chatroomId} />}
             <div className="flex flex-row justify-center h-[10%] text-sm text-slate-800 text-center pt-1 pb-0 mb-0  ">
               <div className="flex flex-row justify-center w-[50%]">
                 <UserPlusIcon

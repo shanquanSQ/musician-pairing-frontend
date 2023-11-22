@@ -107,10 +107,7 @@ export const SearchPage = ({ motion }) => {
               <div className="flex flex-col bg-green-300">
                 <p>{user.fullName}</p>
                 <p>
-                  Instruments: {user.instruments[0].name} -{" "}
-                  {user.instruments[0].userInstrument.instrumentExperience}y If
-                  category was instrument, display that instrument and exp; else
-                  display nothing here
+                {user.instruments[0].userInstrument.instrumentExperience}y experience in {user.instruments[0].name}
                 </p>
               </div>
               <div>
