@@ -143,17 +143,6 @@ export const ProfilePage = ({ motion, pageOwnerUserId, loggedInUserId }) => {
 
             {/* LOGOUT BUTTON */}
             <div className="pt-[1.5em]">
-              {/* <form>
-                <input
-                  type="button"
-                  value="EDIT INFO"
-                  onClick={() => {
-                    alert("edit the info");
-                  }}
-                  className="secondary-cta-btn w-[100%] lg:w-[100%]"
-                />
-              </form> */}
-
               <form>
                 <input
                   type="button"
@@ -166,12 +155,6 @@ export const ProfilePage = ({ motion, pageOwnerUserId, loggedInUserId }) => {
               </form>
             </div>
           </div>
-          {/* 
-          <div className="flex flex-col">
-            <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-left">
-              Stuffz
-            </h1>
-          </div> */}
         </div>
       </div>
     </>

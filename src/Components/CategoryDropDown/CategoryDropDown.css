@@ -17,7 +17,9 @@
 
   transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
   pointer-events: none;
-  @apply absolute w-[80%] font-semibold text-[1.0rem]
+
+  /* Width here needs work. It actually needs to inherit the grandparent's styling. as opposed to parent's */
+  @apply absolute min-w-[100%] w-[18em] font-semibold text-[1.0rem]
     bg-white text-black rounded-md;
 }
 
