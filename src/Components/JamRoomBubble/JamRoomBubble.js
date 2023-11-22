@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import {timeConversion} from "../../utilities.js"
 
 export const JamRoomBubble = ({ roomdata }) => {
   const handleClick = () => {
@@ -13,6 +14,8 @@ export const JamRoomBubble = ({ roomdata }) => {
    * so probably the displayed info below will be like:
    * {roomdata.name} , {roomdata.genre} etc, we'll see
    */
+
+
 
   return (
     <>
@@ -32,7 +35,7 @@ export const JamRoomBubble = ({ roomdata }) => {
           </p>
 
           <p className="py-[1em]">{roomdata && roomdata.description}</p>
-          <p>{roomdata && roomdata.updatedAt}</p>
+          <p>{roomdata && timeConversion(roomdata.updatedAt)}</p>
         </div>
       </NavLink>
     </>

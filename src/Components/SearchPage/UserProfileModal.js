@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // Import Components
 import { Username } from "../../Components/ProfilePage/Username";
@@ -22,6 +23,8 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
     const [textField, setTextField] = useState({ roomname: "" });
     const [isBeingEdited, setIsBeingEdited] = useState(false);
 
+    const navigate = useNavigate();
+
     useEffect(()=>{
         const getUserInfo = async () => {
           const retrievedPageOwnerInfo = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/${pageOwnerUserId}`,{
@@ -41,7 +44,7 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
         `${process.env.REACT_APP_BACKEND_URL}/users/createNewChatroomForTwo`,
         {
           //userId:'the currently logged in user',
-          secondUserFullName:pageOwnerInfo.fullName,
+          //secondUserFullName:pageOwnerInfo.fullName,
           secondUserId: pageOwnerInfo.id,
           name: textField.roomname,
           genresPlayed: "",
@@ -51,10 +54,11 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
           headers: { Authorization: localStorage.getItem("token") },
         }
       );
-
+      const chatRoomId = createdRoom.data.data[0][0].chatroomId;
       alert("Room Created!");
       socket.emit("create-room-for-two", pageOwnerUserId);
       removeModal();
+      navigate(`/${chatRoomId}/jamroom`)
     } else {
       alert("Please key in at least one valid character");
     }
@@ -140,12 +144,14 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
             />
 
             <div>
-              <input
+              {!isBeingEdited ? <input
                 type="button"
                 value="Create Room"
-                onClick={handleCreateRoomForTwo}
+                onClick={()=>setIsBeingEdited(true)}
                 className="secondary-cta-btn w-[100%] lg:w-[100%]"
-              />
+              /> : null}
+              {isBeingEdited ?
+              <>
               <input
                 type="text"
                 name="roomname"
@@ -155,6 +161,14 @@ export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
                 placeholder="JAM ROOM NAME?"
                 className="primary-input-form text-center"
               />
+              <input
+                type="button"
+                value="Confirm Create"
+                onClick={handleCreateRoomForTwo}
+                className="secondary-cta-btn w-[100%] lg:w-[100%]"
+              /> 
+              </> : null
+              }
             </div>
           </div>
         </div>

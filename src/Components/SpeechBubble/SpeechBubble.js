@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import {timeConversion} from "../../utilities.js"
 
 // Import Modals
 import { ProfileIconModal } from "../ProfileIconModal/ProfileIconModal";
@@ -133,7 +134,7 @@ export const SpeechBubble = ({
         <div>
           <p className="text-right text-xs">Sent at:</p>{" "}
           <p className="text-xs text-slate-500 text-right ">
-            {messagedata && messagedata.createdAt}
+            {messagedata && timeConversion(messagedata.createdAt)}
           </p>
         </div>
       </div>
