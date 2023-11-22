@@ -13,7 +13,7 @@ import { io } from "socket.io-client"; // io is a function to call an individual
 import { InviteUserToJamRoomModal } from "../Components/InviteUserToJamRoomModal/InviteUserToJamRoomModal";
 import { UsersInRoomModal } from "../Components/UsersInRoomModal/UsersInRoomModal";
 
-const socket = io(`http://localhost:8080`);
+const socket = io(process.env.REACT_APP_BACKEND_URL);
 
 let authToken;
 

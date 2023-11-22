@@ -5,7 +5,6 @@ import {
     XCircleIcon,
     PencilSquareIcon,
 } from "@heroicons/react/20/solid";
-import { BACKEND_URL } from "../../constants.js";
 
 export function Username({ isOwnPage, displayedUserId, storedUsername }) {
     const [username, setUsername] = useState(storedUsername ? storedUsername : null);
@@ -16,7 +15,7 @@ export function Username({ isOwnPage, displayedUserId, storedUsername }) {
             alert('Please enter a username')
         } else {
         setIsBeingEdited(false);
-        axios.put(`${BACKEND_URL}/users/${displayedUserId}`,
+        axios.put(`${process.env.REACT_APP_BACKEND_URL}/users/${displayedUserId}`,
             {
                 fullName: username,
             },

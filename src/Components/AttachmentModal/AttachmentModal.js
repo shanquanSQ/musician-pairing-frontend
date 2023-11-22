@@ -9,7 +9,7 @@ import { ref as sRef, uploadBytes, getDownloadURL } from "firebase/storage"; // 
 
 // Import Sockets
 import { io } from "socket.io-client"; // io is a function to call an individual socket. the package for frontend(client side) is npm i socket.io-client
-const socket = io(`http://localhost:8080`);
+const socket = io(process.env.REACT_APP_BACKEND_URL);
 
 export const AttachmentModal = ({
   userId,

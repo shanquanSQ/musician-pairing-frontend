@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CategoryDropDown } from "../Components/CategoryDropDown/CategoryDropDown";
 import axios from "axios";
-import { BACKEND_URL } from "../constants.js";
 import { UserProfileModal } from "../Components/SearchPage/UserProfileModal";
 
 export const SearchPage = ({ motion }) => {
@@ -37,7 +36,7 @@ export const SearchPage = ({ motion }) => {
   const handleChangeCategory = async (ev) => {
     if (ev.target.id !== "") {
       const response = await axios.get(
-        `${BACKEND_URL}/${ev.target.id.toLowerCase()}`,
+        `${process.env.REACT_APP_BACKEND_URL}/${ev.target.id.toLowerCase()}`,
         {
           headers: { Authorization: localStorage.getItem("token") },
         }
@@ -65,7 +64,7 @@ export const SearchPage = ({ motion }) => {
       alert("Please select filter criteria");
     } else {
       const response = await axios.get(
-        `${BACKEND_URL}/users/filteredusers/${selectedCategory.toLowerCase()}/${selectedSearchTerm}`,
+        `${process.env.REACT_APP_BACKEND_URL}/users/filteredusers/${selectedCategory.toLowerCase()}/${selectedSearchTerm}`,
         {
           headers: { Authorization: localStorage.getItem("token") },
         }
@@ -98,12 +97,10 @@ export const SearchPage = ({ motion }) => {
               className="flex flex-row h-[10em] p-[1em] bg-white text-black border-[1px] border-slate-200 rounded-md shadow-md mt-[1em] overflow-hidden hover:cursor-pointer scale-100 transition-all active:scale-95"
               onClick={() => {
                 setModalProfileId(user.id);
-                console.log(modalProfileId);
                 handleUserProfileModal();
               }}
               id={`searchresult-${user.fullName}`}
             >
-              {console.log(searchedUsers)}
               <div className="flex flex-col justify-center pr-2">
                 <div className="w-[6em] h-[6em] aspect-square items-center rounded-full overflow-hidden bg-white">
                   <img

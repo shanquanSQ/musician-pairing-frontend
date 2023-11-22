@@ -6,7 +6,7 @@ import {
   CheckCircleIcon,
   XCircleIcon,
 } from "@heroicons/react/20/solid";
-import { BACKEND_URL } from "../../constants.js";
+
 
 export function ProfilePic({ isOwnPage, displayedUserId, storedURL }) {
   const [profilePicture, setProfilePicture] = useState(null);
@@ -21,7 +21,7 @@ export function ProfilePic({ isOwnPage, displayedUserId, storedURL }) {
     uploadBytes(fileRef, profilePicture)
       .then(() => getDownloadURL(fileRef))
       .then((url) => {
-        axios.put(`${BACKEND_URL}/users/${displayedUserId}`, {
+        axios.put(`${process.env.REACT_APP_BACKEND_URL}/users/${displayedUserId}`, {
           profilePictureUrl: url,
         },
         {
