@@ -147,6 +147,8 @@ export const ProfilePage = ({ motion, pageOwnerUserId, loggedInUserId }) => {
                   type="button"
                   value="LOGOUT"
                   onClick={() => {
+                    localStorage.removeItem("token");
+                    setIsAuthenticated(false);
                     navigate("/");
                   }}
                   className="secondary-cta-btn w-[100%] lg:w-[100%]"

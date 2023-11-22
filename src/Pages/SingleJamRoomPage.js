@@ -4,7 +4,6 @@ import axios from "axios";
 
 // Import Components
 import { SpeechBubble } from "../Components/SpeechBubble/SpeechBubble";
-import { JamRoomName } from "../Components/JamRoomPage/JamRoomName";
 import { AttachmentModal } from "../Components/AttachmentModal/AttachmentModal";
 import { UserPlusIcon } from "@heroicons/react/24/outline";
 
@@ -295,13 +294,11 @@ export const SingleJamRoomPage = () => {
               className="font-bold text-txtcolor-primary text-[1.5rem] text-center balance scale-100 transition-all hover:cursor-pointer active:scale-95 origin-center"
               onClick={handleUsersInRoomModal}
             >
-              {roomDetails && (
-                <JamRoomName
-                  storedRoomName={roomDetails.name}
-                  chatroomId={chatroomId}
-                />
-              )}
+
+               {roomDetails && roomDetails.name}
+
             </h1>
+           
 
             <div className="flex flex-row justify-center h-[10%] text-sm text-slate-800 text-center pt-1 pb-[1em] mb-0">
               <div className="flex flex-row justify-end b w-[90%] ">

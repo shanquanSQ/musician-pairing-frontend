@@ -50,7 +50,7 @@ export function JamRoomName({ storedRoomName, chatroomId }) {
                         <button
                             id={`confirmButton-roomname`}
                             style={{ display: "none" }}
-                            onClick={() => writeData()}
+                            onClick={writeData}
                         />
                         <label for={`rejectButton-roomname`}>
                             <XCircleIcon className="h-6 w-6 text-red-500 cursor-pointer" />
