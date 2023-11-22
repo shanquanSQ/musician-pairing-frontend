@@ -20,6 +20,8 @@ import { ProfilePage } from "./Pages/ProfilePage.js";
 import { JamChatroomPage } from "./Pages/JamChatroomPage.js";
 import { SignUpPage } from "./Pages/SignUpPage.js";
 import { SignUpDetailsPage } from "./Pages/SignUpDetailsPage.js";
+import { SingleJamRoomPage } from "./Pages/SingleJamRoomPage.js";
+import { SignUpPictureUpload } from "./Pages/SignUpPictureUpload.js";
 
 function App() {
   return (
@@ -30,6 +32,10 @@ function App() {
         <Route path="login" element={<LoginPage motion={motion} />} />
         <Route path="signup" element={<SignUpPage motion={motion} />} />
         <Route
+          path="profilepictureupload"
+          element={<SignUpPictureUpload motion={motion} />}
+        />
+        <Route
           path="additionaldetails"
           element={<SignUpDetailsPage motion={motion} />}
         />
@@ -39,6 +45,11 @@ function App() {
         <Route
           path="jamchatroom"
           element={<JamChatroomPage motion={motion} />}
+        ></Route>
+
+        <Route
+          path="/:chatroomId/jamroom"
+          element={<SingleJamRoomPage motion={motion} />}
         />
       </Routes>
     </>

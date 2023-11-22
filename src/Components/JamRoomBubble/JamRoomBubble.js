@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
+import {timeConversion} from "../../utilities.js"
 
 export const JamRoomBubble = ({ roomdata }) => {
   const handleClick = () => {
@@ -13,27 +15,29 @@ export const JamRoomBubble = ({ roomdata }) => {
    * {roomdata.name} , {roomdata.genre} etc, we'll see
    */
 
+
+
   return (
     <>
-      <div
-        className="w-[full] min-h-[7em] bg-white rounded-md border py-[1em] px-[1em] shadow-sm scale-100 transition-all origin-left hover:scale-[102%] active:scale-[97%]"
-        onClick={handleClick}
-      >
-        <h1 className="font-semibold text-[1.2rem] text-slate-700">
-          Room Name
-        </h1>
-        <p className="font-medium text-[1.2rem] text-txtcolor-primary">
-          genres blablabla
-        </p>
-        <p className="font-medium text-black">Looking For:</p>
-        <p>Guitarists, Bassists</p>
+      <NavLink to={`/${roomdata.id}/jamroom`}>
+        <div className="w-[full] min-h-[7em] bg-white rounded-md border py-[1em] px-[1em] shadow-sm scale-100 transition-all origin-left hover:scale-[102%] active:scale-[97%]">
+          <h1 className="font-semibold text-[1.2rem] text-slate-700">
+            {roomdata && roomdata.name}
+          </h1>
+          <p className="font-medium text-[1.2rem] text-txtcolor-primary balance">
+            {roomdata && roomdata.genresPlayed}
+          </p>
+          <p className="font-medium text-black text-[1rem]">Looking For:</p>
+          <p>
+            {roomdata.instrumentsWanted //make sure this is a string or it might not work
+              ? roomdata.instrumentsWanted
+              : "Not looking for any particular instruments"}
+          </p>
 
-        <p className="pt-[1em]">
-          some description of the jam, maybe just shitposting or talk about how
-          often they wanna meet up etc. Maybe this entire text visiblity is
-          removed when smaller screens so it's more readable
-        </p>
-      </div>
+          <p className="py-[1em]">{roomdata && roomdata.description}</p>
+          <p>{roomdata && timeConversion(roomdata.updatedAt)}</p>
+        </div>
+      </NavLink>
     </>
   );
 };

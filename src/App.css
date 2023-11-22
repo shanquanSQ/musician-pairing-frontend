@@ -16,6 +16,16 @@
   @apply flex flex-row justify-center;
 }
 
+/* TEXTAREA */
+textarea {
+  resize: none;
+}
+
+/* TEXT BALANCE - For headers with uneven text */
+.balance {
+  text-wrap: balance;
+}
+
 /* VIDEO */
 .video-wrapper {
   position: absolute;

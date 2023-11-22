@@ -1,32 +1,57 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+// import {CfmRejButton} from "../Components/Buttons/CfmRejButton"
+// import {EditButton} from "../Components/Buttons/EditButton"
+// import {DeleteButton} from "../Components/Buttons/DeleteButton"
+import { ProfilePic } from "../Components/ProfilePage/ProfilePic";
+import { InstrumentTable } from "../Components/ProfilePage/InstrumentTable";
+import { Username } from "../Components/ProfilePage/Username";
+import { Bio } from "../Components/ProfilePage/Bio";
+import { ArtistList } from "../Components/ProfilePage/ArtistList";
+import { GenreList } from "../Components/ProfilePage/GenreList";
+import axios from "axios";
 
-export const ProfilePage = ({ motion }) => {
+export const ProfilePage = ({ motion, pageOwnerUserId, loggedInUserId }) => {
+  // these are being set upon entry
+  const [tokenAuth, setTokenAuth] = useState(null);
+  const [currentUser, setCurrentUser] = useState({});
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userId, setUserId] = useState(null);
+
   const navigate = useNavigate();
+  const [isOwnPage, setIsOwnPage] = useState(true); //this will later setup depending on whether username on page matches login user
+  const [pageOwnerInfo, setPageOwnerInfo] = useState(null);
 
-  // Lists will probably come from server as a prop.
-  // Not sure if server request will be done here or in parent component.
-  const instrumentsList = [
-    "Guitar",
-    "Keyboard",
-    "Bass",
-    "Triangle",
-    "castanets",
-    "flute",
-  ];
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      let currentUserInfo = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/users/getCurrentUser`,
+        {
+          headers: { Authorization: localStorage.getItem("token") },
+        }
+      );
+      setIsAuthenticated(true);
+      setUserId(currentUserInfo.data.user.id);
+    };
+    getCurrentUser();
 
-  const genreList = ["Rock", "Pop", "Hip Hop", "Electronic", "Jazz", "Country"];
+    // console.log("exit ");
+  }, []);
 
-  const artistsList = [
-    "John Mayer",
-    "Katy Perry",
-    "Taylor Swift",
-    "Joe Hisaishi",
-    "Elvis Presley",
-    "Spongebob OST",
-  ];
-
-  const username = "TIMMY P.";
+  useEffect(() => {
+    if (isAuthenticated) {
+      const getUserInfo = async () => {
+        const pageOwnerInfo = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/users/${userId}`,
+          {
+            headers: { Authorization: localStorage.getItem("token") },
+          }
+        ); // this should be pageOwnerUserId
+        setPageOwnerInfo(pageOwnerInfo.data.user);
+      };
+      getUserInfo();
+    }
+  }, [isAuthenticated]);
 
   const numberOfSessions = "65";
   const uniqueCollaborators = "30";
@@ -40,36 +65,37 @@ export const ProfilePage = ({ motion }) => {
               {/* <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-left ">
                 PROFILE
               </h1> */}
-
-              <div className="flex flex-row justify-center pb-[2em]">
-                <div className="w-[15em] h-[15em] rounded-lg overflow-hidden">
-                  <img
-                    src="https://firebasestorage.googleapis.com/v0/b/dev-portfolio-sq.appspot.com/o/random%2Fnapoleon-dynamite36641.jpeg?alt=media&token=436c7b15-7324-4311-9fb1-ccab8e0b7d56"
-                    alt="profile"
-                    className="h-full object-cover"
+              {pageOwnerInfo && userId ? (
+                <div>
+                  <ProfilePic
+                    isOwnPage={isOwnPage}
+                    displayedUserId={userId}
+                    storedURL={pageOwnerInfo.profilePictureUrl}
+                  />
+                  <Username
+                    isOwnPage={isOwnPage}
+                    displayedUserId={userId}
+                    storedUsername={pageOwnerInfo.fullName}
                   />
                 </div>
-              </div>
-
-              <h1 className="font-bold text-slate-800 text-[2rem]  ">
-                {username}
-              </h1>
+              ) : null}
             </div>
 
-            <div>
-              <h1 className="font-bold text-txtcolor-primary text-[1.2rem] text-left ">
-                INSTRUMENTS
-              </h1>
-              <div className="text-[1.5rem] font-semibold leading-[1.2em] pr-[1em]">
-                {instrumentsList.map((element, index) => {
-                  return (
-                    <div key={index} id={element} className="inline pr-[.5em]">
-                      {element.toUpperCase()} /
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            {userId && (
+              <InstrumentTable
+                isOwnPage={isOwnPage}
+                displayedUserId={userId}
+                token={tokenAuth}
+              />
+            )}
+
+            {/* <button
+              onClick={() => {
+                console.log(pageOwnerInfo);
+              }}
+            >
+              HELLO
+            </button> */}
 
             <div className="flex flex-row flex-wrap gap-[3em]">
               <div>
@@ -91,54 +117,38 @@ export const ProfilePage = ({ motion }) => {
               </div>
             </div>
 
-            <div>
-              <h1 className="font-bold text-txtcolor-primary text-[1.2rem] text-left ">
-                FAVOURITE GENRES
-              </h1>
-              <div className="text-[1.5rem] font-semibold leading-[1.2em] pr-[1em]">
-                {genreList.map((element, index) => {
-                  return (
-                    <div key={index} id={element} className="inline pr-[.5em]">
-                      {element.toUpperCase()} /
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            {pageOwnerInfo ? (
+              <Bio
+                isOwnPage={isOwnPage}
+                displayedUserId={userId}
+                storedBio={pageOwnerInfo.bio}
+              />
+            ) : null}
 
-            <div>
-              <h1 className="font-bold text-txtcolor-primary text-[1.2rem] text-left ">
-                FAVOURITE ARTISTS
-              </h1>
-              <div className="text-[1.5rem] font-semibold leading-[1.2em] pr-[1em]">
-                {artistsList.map((element, index) => {
-                  return (
-                    <div key={index} id={element} className="inline pr-[.5em]">
-                      {element.toUpperCase()} /
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            {userId && (
+              <GenreList
+                isOwnPage={isOwnPage}
+                displayedUserId={userId}
+                token={tokenAuth}
+              />
+            )}
+            {userId && (
+              <ArtistList
+                isOwnPage={isOwnPage}
+                displayedUserId={userId}
+                token={tokenAuth}
+              />
+            )}
 
             {/* LOGOUT BUTTON */}
             <div className="pt-[1.5em]">
               <form>
                 <input
                   type="button"
-                  value="EDIT INFO"
-                  onClick={() => {
-                    alert("edit the info");
-                  }}
-                  className="secondary-cta-btn w-[100%] lg:w-[100%]"
-                />
-              </form>
-
-              <form>
-                <input
-                  type="button"
                   value="LOGOUT"
                   onClick={() => {
+                    localStorage.removeItem("token");
+                    setIsAuthenticated(false);
                     navigate("/");
                   }}
                   className="secondary-cta-btn w-[100%] lg:w-[100%]"
@@ -146,12 +156,6 @@ export const ProfilePage = ({ motion }) => {
               </form>
             </div>
           </div>
-          {/* 
-          <div className="flex flex-col">
-            <h1 className="font-bold text-txtcolor-primary text-[1.5rem] text-left">
-              Stuffz
-            </h1>
-          </div> */}
         </div>
       </div>
     </>

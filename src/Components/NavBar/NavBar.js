@@ -21,6 +21,7 @@ export const NavBar = () => {
       location.pathname === "/" ||
       location.pathname === "/login" ||
       location.pathname === "/signup" ||
+      location.pathname === "/profilepictureupload" ||
       location.pathname === "/additionaldetails"
     ) {
       setNavToggle(false);
@@ -41,7 +42,7 @@ export const NavBar = () => {
             <UserIcon className="h-6 w-6 nav" />
           </NavLink>
           <NavLink to="search">
-            <MusicalNoteIcon className="h-6 w-6 scale-[130%] origin-center nav  rounded-[50%]" />
+            <MusicalNoteIcon className="h-6 w-6 scale-[130%] origin-center nav rounded-[50%]" />
           </NavLink>
           <NavLink to="jamchatroom">
             <ChatBubbleLeftRightIcon className="h-6 w-6 nav" />
