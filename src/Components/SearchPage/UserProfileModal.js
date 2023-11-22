@@ -9,39 +9,37 @@ import { InstrumentTable } from "../../Components/ProfilePage/InstrumentTable";
 import { ArtistList } from "../../Components/ProfilePage/ArtistList";
 import { GenreList } from "../../Components/ProfilePage/GenreList";
 
-import { BACKEND_URL } from "../../constants.js";
+
 
 // Import Sockets
 import { io } from "socket.io-client"; // io is a function to call an individual socket. the package for frontend(client side) is npm i socket.io-client
-const socket = io(`http://localhost:8080`);
+const socket = io(process.env.REACT_APP_BACKEND_URL);
 
 export const UserProfileModal = ({ pageOwnerUserId, removeModal }) => {
-  const [pageOwnerInfo, setPageOwnerInfo] = useState(null);
-  const [isOwnPage, setIsOwnPage] = useState(false);
-  const [textField, setTextField] = useState({ roomname: "" });
-  const [isBeingEdited, setIsBeingEdited] = useState(false);
 
-  const numberOfSessions = "65";
-  const uniqueCollaborators = "30";
 
-  useEffect(() => {
-    const getUserInfo = async () => {
-      const retrievedPageOwnerInfo = await axios.get(
-        `${BACKEND_URL}/users/${pageOwnerUserId}`,
-        {
-          headers: { Authorization: localStorage.getItem("token") },
+    const [pageOwnerInfo, setPageOwnerInfo] = useState(null)
+    const [isOwnPage, setIsOwnPage] = useState(false); 
+    const [textField, setTextField] = useState({ roomname: "" });
+    const [isBeingEdited, setIsBeingEdited] = useState(false);
+  
+    const numberOfSessions = "65";
+    const uniqueCollaborators = "30";
+
+    useEffect(()=>{
+        const getUserInfo = async () => {
+          const retrievedPageOwnerInfo = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/${pageOwnerUserId}`,{
+            headers: { Authorization: localStorage.getItem("token") },
+        })
+          setPageOwnerInfo(retrievedPageOwnerInfo.data.user)
         }
-      );
-      setPageOwnerInfo(retrievedPageOwnerInfo.data.user);
-    };
-
     getUserInfo();
   }, []);
 
   const handleCreateRoomForTwo = async () => {
     if (textField.roomname != "") {
       const createdRoom = await axios.post(
-        `${BACKEND_URL}/users/createNewChatroomForTwo`,
+        `${process.env.REACT_APP_BACKEND_URL}/users/createNewChatroomForTwo`,
         {
           //userId:'the currently logged in user',
           secondUserFullName: pageOwnerInfo.fullName,

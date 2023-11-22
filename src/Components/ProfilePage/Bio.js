@@ -5,7 +5,6 @@ import {
   XCircleIcon,
   PencilSquareIcon,
 } from "@heroicons/react/20/solid";
-import { BACKEND_URL } from "../../constants.js";
 
 export function Bio({ isOwnPage, displayedUserId, storedBio }) {
   const [bio, setBio] = useState(storedBio ? storedBio : null);
@@ -15,7 +14,7 @@ export function Bio({ isOwnPage, displayedUserId, storedBio }) {
     console.log(bio)
     setIsBeingEdited(false);
     axios.put(
-      `${BACKEND_URL}/users/${displayedUserId}`,
+      `${process.env.REACT_APP_BACKEND_URL}/users/${displayedUserId}`,
       {
         bio,
       },

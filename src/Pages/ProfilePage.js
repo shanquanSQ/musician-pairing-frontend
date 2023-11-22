@@ -10,7 +10,6 @@ import { Bio } from "../Components/ProfilePage/Bio";
 import { ArtistList } from "../Components/ProfilePage/ArtistList";
 import { GenreList } from "../Components/ProfilePage/GenreList";
 import axios from "axios";
-import { BACKEND_URL } from "../constants.js";
 
 export const ProfilePage = ({ motion, pageOwnerUserId, loggedInUserId }) => {
   // these are being set upon entry
@@ -43,7 +42,7 @@ export const ProfilePage = ({ motion, pageOwnerUserId, loggedInUserId }) => {
     if (isAuthenticated) {
       const getUserInfo = async () => {
         const pageOwnerInfo = await axios.get(
-          `${BACKEND_URL}/users/${userId}`,
+          `${process.env.REACT_APP_BACKEND_URL}/users/${userId}`,
           {
             headers: { Authorization: localStorage.getItem("token") },
           }

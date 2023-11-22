@@ -5,7 +5,6 @@ import {
     XCircleIcon,
     PencilSquareIcon,
 } from "@heroicons/react/20/solid";
-import { BACKEND_URL } from "../../constants.js";
 
 export function JamRoomName({ storedRoomName, chatroomId }) {
     const [roomName, setRoomName] = useState(storedRoomName ? storedRoomName : null);

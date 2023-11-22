@@ -7,7 +7,6 @@ import {
   PlusCircleIcon,
 } from "@heroicons/react/20/solid";
 import axios from "axios";
-import { BACKEND_URL } from "../../constants.js";
 
 export function GenreList({ isOwnPage, displayedUserId }) {
   const [genresList, setGenresList] = useState([]);
@@ -17,7 +16,7 @@ export function GenreList({ isOwnPage, displayedUserId }) {
   useEffect(() => {
     const getGenreInfo = async () => {
       const genreInfo = await axios.get(
-        `${BACKEND_URL}/users/${displayedUserId}/genres`,
+        `${process.env.REACT_APP_BACKEND_URL}/users/${displayedUserId}/genres`,
         {
           headers: { Authorization: localStorage.getItem("token") },
         }
@@ -30,7 +29,7 @@ export function GenreList({ isOwnPage, displayedUserId }) {
   const writeData = async () => {
     setIsBeingEdited(false);
     await axios.put(
-      `${BACKEND_URL}/users/${displayedUserId}/genres`,
+      `${process.env.REACT_APP_BACKEND_URL}/users/${displayedUserId}/genres`,
       { genresList },
       {
         headers: { Authorization: localStorage.getItem("token") },
@@ -40,7 +39,7 @@ export function GenreList({ isOwnPage, displayedUserId }) {
 
   const revertData = async () => {
     const genreInfo = await axios.get(
-      `${BACKEND_URL}/users/${displayedUserId}/genres`,
+      `${process.env.REACT_APP_BACKEND_URL}/users/${displayedUserId}/genres`,
       {
         headers: { Authorization: localStorage.getItem("token") },
       }

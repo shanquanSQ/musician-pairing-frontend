@@ -7,7 +7,6 @@ import {
   PlusCircleIcon,
 } from "@heroicons/react/20/solid";
 import axios from "axios";
-import { BACKEND_URL } from "../../constants.js";
 import Select from "react-select";
 
 export function InstrumentTable({ isOwnPage, displayedUserId }) {
@@ -22,7 +21,7 @@ export function InstrumentTable({ isOwnPage, displayedUserId }) {
   useEffect(() => {
     const getUserInstrumentsInfo = async () => {
       const userInstrumentsInfo = await axios.get(
-        `${BACKEND_URL}/users/${displayedUserId}/instruments`,
+        `${process.env.REACT_APP_BACKEND_URL}/users/${displayedUserId}/instruments`,
         {
           headers: { Authorization: localStorage.getItem("token") },
         }
@@ -31,7 +30,7 @@ export function InstrumentTable({ isOwnPage, displayedUserId }) {
     };
     const getFullInstrumentsList = async () => {
       const fullInstrumentsInfo = await axios.get(
-        `${BACKEND_URL}/instruments/selectable`,
+        `${process.env.REACT_APP_BACKEND_URL}/instruments/selectable`,
         {
           headers: { Authorization: localStorage.getItem("token") },
         }
@@ -45,7 +44,7 @@ export function InstrumentTable({ isOwnPage, displayedUserId }) {
   const writeData = async () => {
     setIsBeingEdited(false);
     await axios.put(
-      `${BACKEND_URL}/users/${displayedUserId}/instruments`,
+      `${process.env.REACT_APP_BACKEND_URL}/users/${displayedUserId}/instruments`,
       {
         userInstrumentsList,
       },
@@ -57,7 +56,7 @@ export function InstrumentTable({ isOwnPage, displayedUserId }) {
 
   const revertData = async () => {
     const instrumentInfo = await axios.get(
-      `${BACKEND_URL}/users/${displayedUserId}/instruments`,
+      `${process.env.REACT_APP_BACKEND_URL}/users/${displayedUserId}/instruments`,
       {
         headers: { Authorization: localStorage.getItem("token") },
       }

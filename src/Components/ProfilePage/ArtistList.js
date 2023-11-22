@@ -7,7 +7,6 @@ import {
   PlusCircleIcon,
 } from "@heroicons/react/20/solid";
 import axios from "axios";
-import { BACKEND_URL } from "../../constants.js";
 
 export function ArtistList({ isOwnPage, displayedUserId }) {
   const [artistsList, setArtistsList] = useState([]);
@@ -17,7 +16,7 @@ export function ArtistList({ isOwnPage, displayedUserId }) {
   useEffect(() => {
     const getArtistInfo = async () => {
       const artistInfo = await axios.get(
-        `${BACKEND_URL}/users/${displayedUserId}/artists`,
+        `${process.env.REACT_APP_BACKEND_URL}/users/${displayedUserId}/artists`,
         {
           headers: { Authorization: localStorage.getItem("token") },
         }
@@ -32,7 +31,7 @@ export function ArtistList({ isOwnPage, displayedUserId }) {
   const writeData = async () => {
     setIsBeingEdited(false);
     await axios.put(
-      `${BACKEND_URL}/users/${displayedUserId}/artists`,
+      `${process.env.REACT_APP_BACKEND_URL}/users/${displayedUserId}/artists`,
       { artistsList },
       {
         headers: { Authorization: localStorage.getItem("token") },
@@ -42,7 +41,7 @@ export function ArtistList({ isOwnPage, displayedUserId }) {
 
   const revertData = async () => {
     const artistInfo = await axios.get(
-      `${BACKEND_URL}/users/${displayedUserId}/artists`,
+      `${process.env.REACT_APP_BACKEND_URL}/users/${displayedUserId}/artists`,
       {
         headers: { Authorization: localStorage.getItem("token") },
       }
