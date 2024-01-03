@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {timeConversion} from "../../utilities.js"
+import { timeConversion } from "../../utilities.js";
 
 // Import Modals
 import { ProfileIconModal } from "../ProfileIconModal/ProfileIconModal";
