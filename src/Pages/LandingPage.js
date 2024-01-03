@@ -22,15 +22,17 @@ export const LandingPage = ({ motion }) => {
               duration: 0.5,
             }}
           >
-            <motion.h1 className="font-bold text-white text-[3rem] md:text-[6rem] lg:text-[10rem] leading-0 pt-[1.5em] lg:pt-[0em] md:pt-[0em] drop-shadow-md">
+            <motion.h1 className="font-bold text-white  pt-[1.5em] leading-0 lg:pt-[0em] md:pt-[0em] drop-shadow-md">
               <div className="flex flex-row justify-center w-full">
                 <div className="w-[80%] lg:w-[45%] md:w-[50%]">
-                  <div className="flex flex-row justify-between w-full h-[2rem] lg:h-[4rem]">
+                  <div className="flex flex-row justify-between w-full h-[2rem] lg:h-[64px]">
                     <div className="w-[20%] h-[full] bg-[#2B6CAA] mr-[.7em]"></div>
                     <div className="w-[20%] h-[full] bg-[#AB3257] mr-[.7em]"></div>
                     <div className="w-[70%] h-[full] bg-[#FFB800] "></div>
                   </div>
-                  <p className="lg:mt-[-1rem]">{titletext}</p>
+                  <p className="lg:mt-[-1rem] text-[3rem] md:text-[6rem] lg:text-[10rem]">
+                    {titletext}
+                  </p>
                 </div>
               </div>
               {/* {titletext.split("").map((char, index) => {
