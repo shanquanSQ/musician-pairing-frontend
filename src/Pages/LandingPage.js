@@ -22,15 +22,16 @@ export const LandingPage = ({ motion }) => {
               duration: 0.5,
             }}
           >
-            <motion.h1 className="font-bold text-white  pt-[1.5em] leading-0 lg:pt-[0em] md:pt-[0em] drop-shadow-md">
+            <motion.h1 className="font-bold text-white pt-[1.5em] leading-0 lg:pt-[0em] md:pt-[0em] drop-shadow-md text-[16px]">
               <div className="flex flex-row justify-center w-full">
                 <div className="w-[80%] lg:w-[45%] md:w-[50%]">
                   <div className="flex flex-row justify-between w-full h-[32px] lg:h-[64px]">
-                    <div className="w-[17%] h-[full] bg-[#2B6CAA] mr-[.7em]"></div>
-                    <div className="w-[17%] h-[full] bg-[#AB3257] mr-[.7em]"></div>
-                    <div className="w-[60%] h-[full] bg-[#FFB800] "></div>
+                    <div className="w-[17%] h-[32px] lg:h-[64px] bg-[#2B6CAA] mr-[.7em]"></div>
+                    <div className="w-[17%] h-[32px] lg:h-[64px] bg-[#AB3257] mr-[.7em]"></div>
+                    <div className="w-[60%] h-[32px] lg:h-[64px] bg-[#FFB800] "></div>
                   </div>
-                  <p className="lg:mt-[-1rem] text-[3rem] md:text-[6rem] lg:text-[10rem]">
+                  {/* <p className="lg:mt-[-1rem] text-[3rem] md:text-[6rem] lg:text-[10rem]"> */}
+                  <p className="lg:mt-[-1rem] text-[48px] md:text-[96px] lg:text-[160px]">
                     {titletext}
                   </p>
                 </div>
@@ -55,7 +56,7 @@ export const LandingPage = ({ motion }) => {
             </motion.h1>
 
             {/* <div className="bg-opacity-[20%] bg-slate-800 rounded-md p-[1em] shadow-md backdrop-blur-sm"> */}
-            <div className=" rounded-md p-[1em] shadow-md ">
+            <div className=" rounded-md p-[1em] shadow-md text-[16px] ">
               <input
                 type="button"
                 value="SIGN IN"
