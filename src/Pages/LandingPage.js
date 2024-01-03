@@ -26,8 +26,8 @@ export const LandingPage = ({ motion }) => {
               <div className="flex flex-row justify-center w-full">
                 <div className="w-[80%] lg:w-[45%] md:w-[50%]">
                   <div className="flex flex-row justify-between w-full h-[32px] lg:h-[64px]">
-                    <div className="w-[20%] h-[full] bg-[#2B6CAA] mr-[.7em]"></div>
-                    <div className="w-[20%] h-[full] bg-[#AB3257] mr-[.7em]"></div>
+                    <div className="w-[20%] h-[32px] bg-[#2B6CAA] mr-[.7em]"></div>
+                    <div className="w-[20%] h-[32px] bg-[#AB3257] mr-[.7em]"></div>
                     <div className="w-[70%] h-[full] bg-[#FFB800] "></div>
                   </div>
                   <p className="lg:mt-[-1rem] text-[3rem] md:text-[6rem] lg:text-[10rem]">
